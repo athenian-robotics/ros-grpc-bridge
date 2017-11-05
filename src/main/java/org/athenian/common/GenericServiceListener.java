@@ -1,4 +1,4 @@
-package org.athenian;
+package org.athenian.common;
 
 import com.google.common.util.concurrent.Service;
 import org.slf4j.Logger;

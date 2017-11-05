@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import org.athenian.common.GenericServiceListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
