@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.athenian</groupId>
+    <artifactId>ros-grpc-bridge</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <properties>
+        <jcommander.version>1.72</jcommander.version>
+        <config.version>1.3.2</config.version>
+        <grpc.version>1.7.0</grpc.version>
+        <grpc.plugin.version>1.7.0</grpc.plugin.version>
+        <protobuf.version>3.4.0</protobuf.version>
+        <protobuf.plugin.version>0.5.0</protobuf.plugin.version>
+        <guava.version>19.0</guava.version>
+        <auto.version>1.5.2</auto.version>
+
+        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+
+        <junit.version>4.12</junit.version>
+        <assertj.version>3.8.0</assertj.version>
+        <assertj.maven.version>2.0.0</assertj.maven.version>
+
+        <assembly.version>2.6</assembly.version>
+        <maven.compiler.version>3.6.1</maven.compiler.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <appassembler.version>1.10</appassembler.version>
+
+        <maven.version>3.5.0</maven.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <prerequisites>
+        <maven>${maven.version}</maven>
+    </prerequisites>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-all</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>${jcommander.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>${config.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-all</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.google.auto.value</groupId>
+            <artifactId>auto-value</artifactId>
+            <version>${auto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <defaultGoal>package</defaultGoal>
+
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.5.0.Final</version>
+            </extension>
+        </extensions>
+
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <!-- This includes sources in jar
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                -->
+            </plugin>
+
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>${protobuf.plugin.version}</version>
+                <configuration>
+                    <pluginArtifact>
+                        io.grpc:protoc-gen-grpc-java:${grpc.plugin.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <protocArtifact>
+                        com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
+                    <outputDirectory>${project.build.directory}/generated-sources/protobuf/java</outputDirectory>
+                    <!-- Make sure this is disabled as otherwise build mysteriously fails -->
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                    <!-- Uncomment this to use the local protoc instead of the one downloaded from the repo
+                    <protocExecutable>/usr/local/bin/protoc</protocExecutable>
+                    -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.version}</version>
+                <executions>
+                    <execution>
+                        <id>proxy</id>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+
+                        <configuration>
+                            <finalName>proxy</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>io.prometheus.Proxy</mainClass>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>agent</id>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+
+                        <configuration>
+                            <finalName>agent</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>io.prometheus.Agent</mainClass>
+                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>${appassembler.version}</version>
+
+                <executions>
+                    <execution>
+
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <assembleDirectory>target</assembleDirectory>
+                            <generateRepository>true</generateRepository>
+                            <repositoryLayout>flat</repositoryLayout>
+                            <repositoryName>lib</repositoryName>
+
+                            <binFileExtensions>
+                                <unix>.sh</unix>
+                            </binFileExtensions>
+
+                            <platforms>
+                                <platform>unix</platform>
+                            </platforms>
+
+                            <programs>
+                                <program>
+                                    <id>proxy</id>
+                                    <mainClass>io.prometheus.Proxy</mainClass>
+                                    <jvmSettings>
+                                        <extraArguments>
+                                            <extraArgument>
+                                                -Dlogback.configurationFile=file:./logback/docker-logback.xml
+                                            </extraArgument>
+                                        </extraArguments>
+                                    </jvmSettings>
+                                </program>
+
+                                <program>
+                                    <id>agent</id>
+                                    <mainClass>io.prometheus.Agent</mainClass>
+                                    <jvmSettings>
+                                        <extraArguments>
+                                            <extraArgument>
+                                                -Dlogback.configurationFile=file:./logback/docker-logback.xml
+                                            </extraArgument>
+                                        </extraArguments>
+                                    </jvmSettings>
+                                </program>
+                            </programs>
+
+                        </configuration>
+                    </execution>
+
+                    <!-- Create prometheus-agent jsw scripts -->
+                    <execution>
+
+                        <id>generate-agent-jsw-scripts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate-daemons</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <generateRepository>true</generateRepository>
+                            <repositoryLayout>flat</repositoryLayout>
+                            <configurationDirectory>etc/agent</configurationDirectory>
+
+                            <daemons>
+                                <daemon>
+                                    <id>prometheus-agent</id>
+                                    <wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
+                                    <mainClass>io.prometheus.Agent</mainClass>
+
+                                    <platforms>
+                                        <platform>jsw</platform>
+                                    </platforms>
+
+                                    <generatorConfigurations>
+                                        <generatorConfiguration>
+                                            <generator>jsw</generator>
+                                            <includes>
+                                                <include>macosx-universal-64</include>
+                                                <include>linux-x86-64</include>
+                                                <include>solaris-sparc-64</include>
+                                                <include>windows-x86-64</include>
+                                            </includes>
+                                            <configuration>
+                                                <property>
+                                                    <name>configuration.directory.in.classpath.first</name>
+                                                    <value>etc</value>
+                                                </property>
+                                                <property>
+                                                    <name>set.default.REPO_DIR</name>
+                                                    <value>lib</value>
+                                                </property>
+                                                <property>
+                                                    <name>wrapper.logfile</name>
+                                                    <value>logs/wrapper.log</value>
+                                                </property>
+                                            </configuration>
+                                        </generatorConfiguration>
+                                    </generatorConfigurations>
+                                    <jvmSettings>
+                                        <initialMemorySize>256M</initialMemorySize>
+                                        <maxMemorySize>1024M</maxMemorySize>
+                                        <systemProperties>
+                                            <systemProperty>
+                                                logback.configurationFile=file:conf/agent.logback.xml
+                                            </systemProperty>
+                                        </systemProperties>
+                                        <extraArguments>
+                                            <extraArgument>-server</extraArgument>
+                                        </extraArguments>
+                                    </jvmSettings>
+
+                                </daemon>
+                            </daemons>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/grpc/*.class</exclude>
+                        <exclude>**/ConfigVals*.class</exclude>
+                        <exclude>**/ZipkinReporter*.class</exclude>
+                        <exclude>**/AutoValue_*.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/grpc/**</exclude>
+                        <exclude>**/ConfigVals*.class</exclude>
+                        <exclude>**/ZipkinReporter*.class</exclude>
+                    </excludes>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <!-- select non-aggregate reports -->
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
