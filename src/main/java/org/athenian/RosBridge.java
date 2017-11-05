@@ -24,14 +24,11 @@ public class RosBridge
   }
 
   public static void main(final String[] argv) {
-    final RosBridgeOptions options = new RosBridgeOptions(argv);
-
     logger.info(Utils.getBanner("banners/bridge.txt"));
-
+    final RosBridgeOptions options = new RosBridgeOptions(argv);
     final RosBridge rosBridge = new RosBridge(options, options.getPort(), null);
     rosBridge.startAsync();
   }
-
 
   @Override
   protected void startUp()

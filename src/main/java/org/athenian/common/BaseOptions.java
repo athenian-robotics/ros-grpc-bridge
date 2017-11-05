@@ -64,6 +64,4 @@ public abstract class BaseOptions {
           System.setProperty(key, prop);
         });
   }
-
-  public Map<String, String> getDynamicParams() { return this.dynamicParams; }
 }
