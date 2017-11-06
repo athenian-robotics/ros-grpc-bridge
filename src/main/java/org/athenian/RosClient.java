@@ -13,6 +13,7 @@ import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -21,11 +22,13 @@ import static org.athenian.grpc.RosBridgeServiceGrpc.newBlockingStub;
 import static org.athenian.grpc.RosBridgeServiceGrpc.newStub;
 
 public class RosClient {
-  private static final Logger logger = LoggerFactory.getLogger(RosClient.class);
+  private static final Logger     logger       = LoggerFactory.getLogger(RosClient.class);
+  private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
   private final AtomicReference<ManagedChannel>               channelRef      = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceBlockingStub> blockingStubRef = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceStub>         asyncStubRef    = new AtomicReference<>();
+
   private final String hostname;
   private final int    port;
 
@@ -78,8 +81,9 @@ public class RosClient {
           }
         });
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10000; i++) {
       TwistData data = TwistData.newBuilder()
+                                .setMsgId(ID_GENERATOR.incrementAndGet())
                                 .setLinearX(i)
                                 .setLinearY(i + 1)
                                 .setLinearZ(i + 2)
@@ -89,8 +93,9 @@ public class RosClient {
                                 .build();
       logger.info("Writing data");
       observer.onNext(data);
+      Utils.sleepForMillis(30);
+
     }
-    Utils.sleepForSecs(10);
     observer.onCompleted();
   }
 

@@ -17,3 +17,8 @@ plugincheck:
 
 versioncheck: jarcheck plugincheck
 
+
+py-stubs:
+	python -m grpc_tools.protoc -I./src/main/proto --python_out=./src/main/python/grpc --grpc_python_out=./src/main/python/grpc ./src/main/proto/service.proto
+
+

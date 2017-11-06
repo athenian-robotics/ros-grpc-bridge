@@ -9,13 +9,10 @@ import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 class RosBridgeServiceImpl
     extends RosBridgeServiceGrpc.RosBridgeServiceImplBase {
 
   private static final Logger     logger       = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
-  private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
   private final RosBridge rosBridge;
 
@@ -24,7 +21,7 @@ class RosBridgeServiceImpl
   }
 
   @Override
-  public StreamObserver<TwistData> reportTwistData(StreamObserver<Empty> responseObserver) {
+  public StreamObserver<TwistData> reportTwistData(StreamObserver<Empty> observer) {
     return new StreamObserver<TwistData>() {
       @Override
       public void onNext(final TwistData twistData) {
@@ -37,8 +34,8 @@ class RosBridgeServiceImpl
         if (status != Status.CANCELLED)
           logger.info("Error in reportTwist(): {}", status);
         try {
-          responseObserver.onNext(Empty.getDefaultInstance());
-          responseObserver.onCompleted();
+          observer.onNext(Empty.getDefaultInstance());
+          observer.onCompleted();
         }
         catch (StatusRuntimeException e) {
           // logger.warn("StatusRuntimeException", e);
@@ -48,8 +45,8 @@ class RosBridgeServiceImpl
 
       @Override
       public void onCompleted() {
-        responseObserver.onNext(Empty.getDefaultInstance());
-        responseObserver.onCompleted();
+        observer.onNext(Empty.getDefaultInstance());
+        observer.onCompleted();
       }
     };
   }
