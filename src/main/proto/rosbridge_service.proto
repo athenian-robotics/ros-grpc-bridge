@@ -7,7 +7,6 @@ option java_multiple_files = true;
 option java_package = "org.athenian.grpc";
 
 message TwistData {
-    int64 msg_id = 1;
     double linear_x = 2;
     double linear_y = 3;
     double linear_z = 4;
@@ -17,9 +16,6 @@ message TwistData {
 }
 
 service RosBridgeService {
-    rpc reset (google.protobuf.Empty) returns (google.protobuf.Empty) {
-    }
-
     rpc reportTwistData (TwistData) returns (google.protobuf.Empty) {
     }
 

@@ -83,7 +83,6 @@ public class RosClient {
 
     for (int i = 0; i < 10000; i++) {
       TwistData data = TwistData.newBuilder()
-                                .setMsgId(ID_GENERATOR.incrementAndGet())
                                 .setLinearX(i)
                                 .setLinearY(i + 1)
                                 .setLinearZ(i + 2)

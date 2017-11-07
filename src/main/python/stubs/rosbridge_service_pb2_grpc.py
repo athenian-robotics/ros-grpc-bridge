@@ -13,11 +13,6 @@ class RosBridgeServiceStub(object):
         Args:
           channel: A grpc.Channel.
         """
-        self.reset = channel.unary_unary(
-            '/rosbridge_service.RosBridgeService/reset',
-            request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-        )
         self.reportTwistData = channel.unary_unary(
             '/rosbridge_service.RosBridgeService/reportTwistData',
             request_serializer=rosbridge__service__pb2.TwistData.SerializeToString,
@@ -32,11 +27,6 @@ class RosBridgeServiceStub(object):
 
 class RosBridgeServiceServicer(object):
 
-    def reset(self, request, context):
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def reportTwistData(self, request, context):
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -50,11 +40,6 @@ class RosBridgeServiceServicer(object):
 
 def add_RosBridgeServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'reset': grpc.unary_unary_rpc_method_handler(
-            servicer.reset,
-            request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-        ),
         'reportTwistData': grpc.unary_unary_rpc_method_handler(
             servicer.reportTwistData,
             request_deserializer=rosbridge__service__pb2.TwistData.FromString,

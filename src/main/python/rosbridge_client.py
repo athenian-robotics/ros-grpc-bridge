@@ -33,31 +33,36 @@ if __name__ == "__main__":
 
     bridge = RosBridgeClient("localhost:50051")
 
+    count = 10000
 
     def twit_gen(cnt):
         for i in range(cnt):
-            twist_data = TwistData(msg_id=i,
-                                   linear_x=i,
+            twist_data = TwistData(linear_x=i,
                                    linear_y=i + 1,
                                    linear_z=i + 2,
                                    angular_x=i + 3,
                                    angular_y=i + 4,
                                    angular_z=i + 5)
-            print("Streaming data")
+            # print("Streaming data")
             yield twist_data
-            time.sleep(1)
 
 
-    bridge.stream_twist(twit_gen(10))
+    start1 = time.time()
+    bridge.stream_twist(twit_gen(count))
+    end1 = time.time()
+    print("Stream elapsed: " + str(end1 - start1))
 
-    for i in range(10):
-        twist_data = TwistData(msg_id=i,
-                               linear_x=i,
+    start2 = time.time()
+    for i in range(count):
+        twist_data = TwistData(linear_x=i,
                                linear_y=i + 1,
                                linear_z=i + 2,
                                angular_x=i + 3,
                                angular_y=i + 4,
                                angular_z=i + 5)
-        print("Sending data")
+        #print("Sending data")
         bridge.report_twist(twist_data)
-        time.sleep(1)
+    end2 = time.time()
+    print("Nonstream elapsed: " + str(end2 - start2))
+
+    time.sleep(10)
