@@ -23,7 +23,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     package='rosbridge_service',
     syntax='proto3',
     serialized_pb=_b(
-        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\"z\n\tTwistData\x12\x10\n\x08linear_x\x18\x02 \x01(\x01\x12\x10\n\x08linear_y\x18\x03 \x01(\x01\x12\x10\n\x08linear_z\x18\x04 \x01(\x01\x12\x11\n\tangular_x\x18\x05 \x01(\x01\x12\x11\n\tangular_y\x18\x06 \x01(\x01\x12\x11\n\tangular_z\x18\x07 \x01(\x01\x32\xaa\x01\n\x10RosBridgeService\x12I\n\x0freportTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00\x12K\n\x0fstreamTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00(\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00\x62\x06proto3')
+        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\"z\n\tTwistData\x12\x10\n\x08linear_x\x18\x02 \x01(\x01\x12\x10\n\x08linear_y\x18\x03 \x01(\x01\x12\x10\n\x08linear_z\x18\x04 \x01(\x01\x12\x11\n\tangular_x\x18\x05 \x01(\x01\x12\x11\n\tangular_y\x18\x06 \x01(\x01\x12\x11\n\tangular_z\x18\x07 \x01(\x01\x32\xa9\x01\n\x10RosBridgeService\x12H\n\x0ewriteTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00\x12K\n\x0fstreamTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00(\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00\x62\x06proto3')
     ,
     dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ],
     public_dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
@@ -124,8 +124,8 @@ try:
             Args:
               channel: A grpc.Channel.
             """
-            self.reportTwistData = channel.unary_unary(
-                '/rosbridge_service.RosBridgeService/reportTwistData',
+            self.writeTwistData = channel.unary_unary(
+                '/rosbridge_service.RosBridgeService/writeTwistData',
                 request_serializer=TwistData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             )
@@ -138,7 +138,7 @@ try:
 
     class RosBridgeServiceServicer(object):
 
-        def reportTwistData(self, request, context):
+        def writeTwistData(self, request, context):
             context.set_code(grpc.StatusCode.UNIMPLEMENTED)
             context.set_details('Method not implemented!')
             raise NotImplementedError('Method not implemented!')
@@ -151,8 +151,8 @@ try:
 
     def add_RosBridgeServiceServicer_to_server(servicer, server):
         rpc_method_handlers = {
-            'reportTwistData': grpc.unary_unary_rpc_method_handler(
-                servicer.reportTwistData,
+            'writeTwistData': grpc.unary_unary_rpc_method_handler(
+                servicer.writeTwistData,
                 request_deserializer=TwistData.FromString,
                 response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
@@ -174,7 +174,7 @@ try:
         file not marked beta) for all further purposes. This class was generated
         only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
 
-        def reportTwistData(self, request, context):
+        def writeTwistData(self, request, context):
             context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
         def streamTwistData(self, request_iterator, context):
@@ -188,10 +188,10 @@ try:
         file not marked beta) for all further purposes. This class was generated
         only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
 
-        def reportTwistData(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+        def writeTwistData(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
             raise NotImplementedError()
 
-        reportTwistData.future = None
+        writeTwistData.future = None
 
         def streamTwistData(self, request_iterator, timeout, metadata=None, with_call=False, protocol_options=None):
             raise NotImplementedError()
@@ -207,20 +207,20 @@ try:
         file not marked beta) for all further purposes. This function was
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_deserializers = {
-            ('rosbridge_service.RosBridgeService', 'reportTwistData'): TwistData.FromString,
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.FromString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.FromString,
         }
         response_serializers = {
             ('rosbridge_service.RosBridgeService',
-             'reportTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ('rosbridge_service.RosBridgeService',
+             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         }
         method_implementations = {
-            ('rosbridge_service.RosBridgeService', 'reportTwistData'): face_utilities.unary_unary_inline(
-                servicer.reportTwistData),
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): face_utilities.stream_unary_inline(
                 servicer.streamTwistData),
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): face_utilities.unary_unary_inline(
+                servicer.writeTwistData),
         }
         server_options = beta_implementations.server_options(request_deserializers=request_deserializers,
                                                              response_serializers=response_serializers,
@@ -237,18 +237,18 @@ try:
         file not marked beta) for all further purposes. This function was
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_serializers = {
-            ('rosbridge_service.RosBridgeService', 'reportTwistData'): TwistData.SerializeToString,
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.SerializeToString,
         }
         response_deserializers = {
             ('rosbridge_service.RosBridgeService',
-             'reportTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            ('rosbridge_service.RosBridgeService',
+             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         }
         cardinalities = {
-            'reportTwistData': cardinality.Cardinality.UNARY_UNARY,
             'streamTwistData': cardinality.Cardinality.STREAM_UNARY,
+            'writeTwistData': cardinality.Cardinality.UNARY_UNARY,
         }
         stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer,
                                                          request_serializers=request_serializers,

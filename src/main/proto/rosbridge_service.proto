@@ -16,7 +16,7 @@ message TwistData {
 }
 
 service RosBridgeService {
-    rpc reportTwistData (TwistData) returns (google.protobuf.Empty) {
+    rpc writeTwistData (TwistData) returns (google.protobuf.Empty) {
     }
 
     rpc streamTwistData (stream TwistData) returns (google.protobuf.Empty) {

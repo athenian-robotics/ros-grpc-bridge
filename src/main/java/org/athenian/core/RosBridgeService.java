@@ -1,4 +1,4 @@
-package org.athenian;
+package org.athenian.core;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import org.athenian.RosBridge;
 import org.athenian.common.GenericServiceListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,6 +7,7 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import org.athenian.common.Utils;
+import org.athenian.core.RosClientOptions;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
 import org.athenian.grpc.TwistData;
@@ -58,10 +59,29 @@ public class RosClient {
   public static void main(final String[] argv) {
     final RosClientOptions options = new RosClientOptions(argv);
     final RosClient rosClient = new RosClient(options, null);
-    rosClient.writeData();
+
+    int count = 10000;
+    rosClient.writeBlockingData(count);
+    rosClient.writeStreamData(count);
+
+    Utils.sleepForSecs(5);
   }
 
-  public void writeData() {
+  public void writeBlockingData(final int count) {
+    for (int i = 0; i < count; i++) {
+      TwistData data = TwistData.newBuilder()
+                                .setLinearX(i)
+                                .setLinearY(i + 1)
+                                .setLinearZ(i + 2)
+                                .setAngularX(i + 3)
+                                .setAngularY(i + 4)
+                                .setAngularZ(i + 5)
+                                .build();
+      this.getBlockingStub().writeTwistData(data);
+    }
+  }
+
+  public void writeStreamData(final int count) {
     final StreamObserver<TwistData> observer = this.getAsyncStub().streamTwistData(
         new StreamObserver<Empty>() {
           @Override
@@ -81,7 +101,7 @@ public class RosClient {
           }
         });
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < count; i++) {
       TwistData data = TwistData.newBuilder()
                                 .setLinearX(i)
                                 .setLinearY(i + 1)
@@ -92,7 +112,6 @@ public class RosClient {
                                 .build();
       logger.info("Writing data");
       observer.onNext(data);
-      Utils.sleepForMillis(30);
 
     }
     observer.onCompleted();

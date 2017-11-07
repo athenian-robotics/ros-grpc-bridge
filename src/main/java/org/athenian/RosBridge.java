@@ -3,6 +3,8 @@ package org.athenian;
 import com.google.common.base.MoreObjects;
 import org.athenian.common.GenericService;
 import org.athenian.common.Utils;
+import org.athenian.core.RosBridgeOptions;
+import org.athenian.core.RosBridgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ public class RosBridge
                    final String inProcessServerName) {
     this.grpcService = isNullOrEmpty(inProcessServerName) ? RosBridgeService.create(this, port)
                                                           : RosBridgeService.create(this, inProcessServerName);
+    this.init();
   }
 
   public static void main(final String[] argv) {

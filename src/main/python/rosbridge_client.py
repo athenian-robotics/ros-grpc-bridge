@@ -10,23 +10,21 @@ logger = logging.getLogger(__name__)
 
 class RosBridgeClient(object):
     def __init__(self, hostname):
-        self.hostname = hostname
-        self.channel = grpc.insecure_channel(self.hostname)
-        self.stub = RosBridgeServiceStub(self.channel)
-
-    def stream_twist(self, iter):
-        try:
-            server_info = self.stub.streamTwistData(iter)
-        except BaseException as e:
-            logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.hostname, e))
-            time.sleep(1)
+        self.__hostname = hostname
+        self.__channel = grpc.insecure_channel(self.__hostname)
+        self.__stub = RosBridgeServiceStub(self.__channel)
 
     def report_twist(self, twist_data):
         try:
-            server_info = self.stub.reportTwistData(twist_data)
+            self.__stub.writeTwistData(twist_data)
         except BaseException as e:
-            logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.hostname, e))
-            time.sleep(1)
+            logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
+
+    def stream_twist(self, iter):
+        try:
+            self.__stub.streamTwistData(iter)
+        except BaseException as e:
+            logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
 
 
 if __name__ == "__main__":

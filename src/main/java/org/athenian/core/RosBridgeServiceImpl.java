@@ -1,9 +1,10 @@
-package org.athenian;
+package org.athenian.core;
 
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import org.athenian.RosBridge;
 import org.athenian.grpc.RosBridgeServiceGrpc;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 class RosBridgeServiceImpl
     extends RosBridgeServiceGrpc.RosBridgeServiceImplBase {
 
-  private static final Logger     logger       = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
 
   private final RosBridge rosBridge;
 
@@ -21,7 +22,7 @@ class RosBridgeServiceImpl
   }
 
   @Override
-  public void reportTwistData(final TwistData twistData, final StreamObserver<Empty> observer) {
+  public void writeTwistData(final TwistData twistData, final StreamObserver<Empty> observer) {
     logger.info("Got data {}", twistData);
     observer.onNext(Empty.getDefaultInstance());
     observer.onCompleted();
