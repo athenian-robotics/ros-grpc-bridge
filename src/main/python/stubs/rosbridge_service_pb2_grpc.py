@@ -2,7 +2,7 @@
 import google.protobuf.empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import grpc
 
-import service_pb2 as service__pb2
+import rosbridge_service_pb2 as rosbridge__service__pb2
 
 
 class RosBridgeServiceStub(object):
@@ -18,9 +18,14 @@ class RosBridgeServiceStub(object):
             request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         )
-        self.reportTwistData = channel.stream_unary(
+        self.reportTwistData = channel.unary_unary(
             '/rosbridge_service.RosBridgeService/reportTwistData',
-            request_serializer=service__pb2.TwistData.SerializeToString,
+            request_serializer=rosbridge__service__pb2.TwistData.SerializeToString,
+            response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        )
+        self.streamTwistData = channel.stream_unary(
+            '/rosbridge_service.RosBridgeService/streamTwistData',
+            request_serializer=rosbridge__service__pb2.TwistData.SerializeToString,
             response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         )
 
@@ -32,7 +37,12 @@ class RosBridgeServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def reportTwistData(self, request_iterator, context):
+    def reportTwistData(self, request, context):
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def streamTwistData(self, request_iterator, context):
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -45,9 +55,14 @@ def add_RosBridgeServiceServicer_to_server(servicer, server):
             request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         ),
-        'reportTwistData': grpc.stream_unary_rpc_method_handler(
+        'reportTwistData': grpc.unary_unary_rpc_method_handler(
             servicer.reportTwistData,
-            request_deserializer=service__pb2.TwistData.FromString,
+            request_deserializer=rosbridge__service__pb2.TwistData.FromString,
+            response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+        ),
+        'streamTwistData': grpc.stream_unary_rpc_method_handler(
+            servicer.streamTwistData,
+            request_deserializer=rosbridge__service__pb2.TwistData.FromString,
             response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         ),
     }

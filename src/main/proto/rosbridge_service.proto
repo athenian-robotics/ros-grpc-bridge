@@ -20,6 +20,9 @@ service RosBridgeService {
     rpc reset (google.protobuf.Empty) returns (google.protobuf.Empty) {
     }
 
-    rpc reportTwistData (stream TwistData) returns (google.protobuf.Empty) {
+    rpc reportTwistData (TwistData) returns (google.protobuf.Empty) {
+    }
+
+    rpc streamTwistData (stream TwistData) returns (google.protobuf.Empty) {
     }
 }

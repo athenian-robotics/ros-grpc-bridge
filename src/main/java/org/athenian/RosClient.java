@@ -62,7 +62,7 @@ public class RosClient {
   }
 
   public void writeData() {
-    final StreamObserver<TwistData> observer = this.getAsyncStub().reportTwistData(
+    final StreamObserver<TwistData> observer = this.getAsyncStub().streamTwistData(
         new StreamObserver<Empty>() {
           @Override
           public void onNext(Empty empty) {

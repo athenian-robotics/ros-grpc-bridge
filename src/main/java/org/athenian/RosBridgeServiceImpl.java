@@ -21,11 +21,18 @@ class RosBridgeServiceImpl
   }
 
   @Override
-  public StreamObserver<TwistData> reportTwistData(StreamObserver<Empty> observer) {
+  public void reportTwistData(final TwistData twistData, final StreamObserver<Empty> observer) {
+    logger.info("Got data {}", twistData);
+    observer.onNext(Empty.getDefaultInstance());
+    observer.onCompleted();
+  }
+
+  @Override
+  public StreamObserver<TwistData> streamTwistData(final StreamObserver<Empty> observer) {
     return new StreamObserver<TwistData>() {
       @Override
       public void onNext(final TwistData twistData) {
-        logger.info("Got data {}", twistData);
+        logger.info("Got stream data {}", twistData);
       }
 
       @Override
