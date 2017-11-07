@@ -5,8 +5,11 @@ import org.athenian.common.GenericService;
 import org.athenian.common.Utils;
 import org.athenian.core.RosBridgeOptions;
 import org.athenian.core.RosBridgeService;
+import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -20,16 +23,20 @@ public class RosBridge
 
   public RosBridge(final RosBridgeOptions options,
                    final int port,
-                   final String inProcessServerName) {
-    this.grpcService = isNullOrEmpty(inProcessServerName) ? RosBridgeService.create(this, port)
-                                                          : RosBridgeService.create(this, inProcessServerName);
+                   final String inProcessName,
+                   final Consumer<TwistData> action) {
+    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, action)
+                                                    : RosBridgeService.create(this, inProcessName, action);
     this.init();
   }
 
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
     final RosBridgeOptions options = new RosBridgeOptions(argv);
-    final RosBridge rosBridge = new RosBridge(options, options.getPort(), null);
+    final RosBridge rosBridge = new RosBridge(options,
+                                              options.getPort(),
+                                              null,
+                                              data -> logger.info("Got data {}", data));
     rosBridge.startAsync();
   }
 

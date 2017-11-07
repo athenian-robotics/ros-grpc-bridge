@@ -1,20 +1,17 @@
 package org.athenian;
 
-import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
-import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
-import io.grpc.stub.StreamObserver;
 import org.athenian.common.Utils;
 import org.athenian.core.RosClientOptions;
+import org.athenian.core.TwistDataStream;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -23,8 +20,7 @@ import static org.athenian.grpc.RosBridgeServiceGrpc.newBlockingStub;
 import static org.athenian.grpc.RosBridgeServiceGrpc.newStub;
 
 public class RosClient {
-  private static final Logger     logger       = LoggerFactory.getLogger(RosClient.class);
-  private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+  private static final Logger logger = LoggerFactory.getLogger(RosClient.class);
 
   private final AtomicReference<ManagedChannel>               channelRef      = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceBlockingStub> blockingStubRef = new AtomicReference<>();
@@ -33,8 +29,7 @@ public class RosClient {
   private final String hostname;
   private final int    port;
 
-  public RosClient(final RosClientOptions options, final String inProcessServerName) {
-
+  public RosClient(final RosClientOptions options, final String inProcessName) {
     if (options.getHostname().contains(":")) {
       String[] vals = options.getHostname().split(":");
       this.hostname = vals[0];
@@ -45,12 +40,12 @@ public class RosClient {
       this.port = 50051;
     }
 
-    this.channelRef.set(isNullOrEmpty(inProcessServerName) ? NettyChannelBuilder.forAddress(this.hostname, this.port)
-                                                                                .usePlaintext(true)
-                                                                                .build()
-                                                           : InProcessChannelBuilder.forName(inProcessServerName)
-                                                                                    .usePlaintext(true)
-                                                                                    .build());
+    this.channelRef.set(isNullOrEmpty(inProcessName) ? NettyChannelBuilder.forAddress(this.hostname, this.port)
+                                                                          .usePlaintext(true)
+                                                                          .build()
+                                                     : InProcessChannelBuilder.forName(inProcessName)
+                                                                              .usePlaintext(true)
+                                                                              .build());
     logger.info("Creating gRPC stubs");
     this.blockingStubRef.set(newBlockingStub(intercept(this.getChannel())));
     this.asyncStubRef.set(newStub(intercept(this.getChannel())));
@@ -61,13 +56,6 @@ public class RosClient {
     final RosClient rosClient = new RosClient(options, null);
 
     int count = 10000;
-    rosClient.writeBlockingData(count);
-    rosClient.writeStreamData(count);
-
-    Utils.sleepForSecs(5);
-  }
-
-  public void writeBlockingData(final int count) {
     for (int i = 0; i < count; i++) {
       TwistData data = TwistData.newBuilder()
                                 .setLinearX(i)
@@ -77,44 +65,32 @@ public class RosClient {
                                 .setAngularY(i + 4)
                                 .setAngularZ(i + 5)
                                 .build();
-      this.getBlockingStub().writeTwistData(data);
+      rosClient.writeData(data);
     }
+
+    try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
+      for (int i = 0; i < count; i++) {
+        TwistData data = TwistData.newBuilder()
+                                  .setLinearX(i)
+                                  .setLinearY(i + 1)
+                                  .setLinearZ(i + 2)
+                                  .setAngularX(i + 3)
+                                  .setAngularY(i + 4)
+                                  .setAngularZ(i + 5)
+                                  .build();
+        logger.info("Writing data");
+        stream.writeData(data);
+      }
+    }
+    Utils.sleepForSecs(2);
   }
 
-  public void writeStreamData(final int count) {
-    final StreamObserver<TwistData> observer = this.getAsyncStub().streamTwistData(
-        new StreamObserver<Empty>() {
-          @Override
-          public void onNext(Empty empty) {
-            // Ignore Empty return value
-          }
+  public void writeData(final TwistData data) {
+    this.getBlockingStub().writeTwistData(data);
+  }
 
-          @Override
-          public void onError(Throwable t) {
-            final Status s = Status.fromThrowable(t);
-            logger.info("Error in writeResponsesToProxyUntilDisconnected(): {} {}", s.getCode(), s.getDescription());
-          }
-
-          @Override
-          public void onCompleted() {
-
-          }
-        });
-
-    for (int i = 0; i < count; i++) {
-      TwistData data = TwistData.newBuilder()
-                                .setLinearX(i)
-                                .setLinearY(i + 1)
-                                .setLinearZ(i + 2)
-                                .setAngularX(i + 3)
-                                .setAngularY(i + 4)
-                                .setAngularZ(i + 5)
-                                .build();
-      logger.info("Writing data");
-      observer.onNext(data);
-
-    }
-    observer.onCompleted();
+  public TwistDataStream newTwistDataStream() {
+    return new TwistDataStream(this.getAsyncStub());
   }
 
   private ManagedChannel getChannel() { return this.channelRef.get(); }

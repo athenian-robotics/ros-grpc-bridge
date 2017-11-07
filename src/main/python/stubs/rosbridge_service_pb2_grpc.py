@@ -14,7 +14,7 @@ class RosBridgeServiceStub(object):
           channel: A grpc.Channel.
         """
         self.writeTwistData = channel.unary_unary(
-            '/rosbridge_service.RosBridgeService/writeTwistData',
+            '/rosbridge_service.RosBridgeService/writeData',
             request_serializer=rosbridge__service__pb2.TwistData.SerializeToString,
             response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         )
@@ -40,7 +40,7 @@ class RosBridgeServiceServicer(object):
 
 def add_RosBridgeServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'writeTwistData': grpc.unary_unary_rpc_method_handler(
+        'writeData': grpc.unary_unary_rpc_method_handler(
             servicer.writeTwistData,
             request_deserializer=rosbridge__service__pb2.TwistData.FromString,
             response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,

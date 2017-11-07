@@ -125,7 +125,7 @@ try:
               channel: A grpc.Channel.
             """
             self.writeTwistData = channel.unary_unary(
-                '/rosbridge_service.RosBridgeService/writeTwistData',
+                '/rosbridge_service.RosBridgeService/writeData',
                 request_serializer=TwistData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             )
@@ -151,7 +151,7 @@ try:
 
     def add_RosBridgeServiceServicer_to_server(servicer, server):
         rpc_method_handlers = {
-            'writeTwistData': grpc.unary_unary_rpc_method_handler(
+            'writeData': grpc.unary_unary_rpc_method_handler(
                 servicer.writeTwistData,
                 request_deserializer=TwistData.FromString,
                 response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
@@ -208,18 +208,18 @@ try:
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_deserializers = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.FromString,
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.FromString,
+            ('rosbridge_service.RosBridgeService', 'writeData'): TwistData.FromString,
         }
         response_serializers = {
             ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ('rosbridge_service.RosBridgeService',
-             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+             'writeData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         }
         method_implementations = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): face_utilities.stream_unary_inline(
                 servicer.streamTwistData),
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): face_utilities.unary_unary_inline(
+            ('rosbridge_service.RosBridgeService', 'writeData'): face_utilities.unary_unary_inline(
                 servicer.writeTwistData),
         }
         server_options = beta_implementations.server_options(request_deserializers=request_deserializers,
@@ -238,17 +238,17 @@ try:
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_serializers = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.SerializeToString,
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'writeData'): TwistData.SerializeToString,
         }
         response_deserializers = {
             ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             ('rosbridge_service.RosBridgeService',
-             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+             'writeData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         }
         cardinalities = {
             'streamTwistData': cardinality.Cardinality.STREAM_UNARY,
-            'writeTwistData': cardinality.Cardinality.UNARY_UNARY,
+            'writeData': cardinality.Cardinality.UNARY_UNARY,
         }
         stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer,
                                                          request_serializers=request_serializers,
