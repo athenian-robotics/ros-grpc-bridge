@@ -17,8 +17,7 @@
         <protobuf.version>3.4.0</protobuf.version>
         <protobuf.plugin.version>0.5.0</protobuf.plugin.version>
         <guava.version>19.0</guava.version>
-        <auto.version>1.5.2</auto.version>
-
+        s
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
 
@@ -83,14 +82,6 @@
             <groupId>io.grpc</groupId>
             <artifactId>grpc-all</artifactId>
             <version>${grpc.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.google.auto.value</groupId>
-            <artifactId>auto-value</artifactId>
-            <version>${auto.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -246,208 +237,9 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${assembly.version}</version>
-                <executions>
-                    <execution>
-                        <id>proxy</id>
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
-                        <phase>package</phase>
-
-                        <configuration>
-                            <finalName>proxy</finalName>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <archive>
-                                <manifest>
-                                    <mainClass>io.prometheus.Proxy</mainClass>
-                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                </manifest>
-                            </archive>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>agent</id>
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
-                        <phase>package</phase>
-
-                        <configuration>
-                            <finalName>agent</finalName>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <archive>
-                                <manifest>
-                                    <mainClass>io.prometheus.Agent</mainClass>
-                                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                </manifest>
-                            </archive>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>${appassembler.version}</version>
-
-                <executions>
-                    <execution>
-
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-
-                        <configuration>
-
-                            <assembleDirectory>target</assembleDirectory>
-                            <generateRepository>true</generateRepository>
-                            <repositoryLayout>flat</repositoryLayout>
-                            <repositoryName>lib</repositoryName>
-
-                            <binFileExtensions>
-                                <unix>.sh</unix>
-                            </binFileExtensions>
-
-                            <platforms>
-                                <platform>unix</platform>
-                            </platforms>
-
-                            <programs>
-                                <program>
-                                    <id>proxy</id>
-                                    <mainClass>io.prometheus.Proxy</mainClass>
-                                    <jvmSettings>
-                                        <extraArguments>
-                                            <extraArgument>
-                                                -Dlogback.configurationFile=file:./logback/docker-logback.xml
-                                            </extraArgument>
-                                        </extraArguments>
-                                    </jvmSettings>
-                                </program>
-
-                                <program>
-                                    <id>agent</id>
-                                    <mainClass>io.prometheus.Agent</mainClass>
-                                    <jvmSettings>
-                                        <extraArguments>
-                                            <extraArgument>
-                                                -Dlogback.configurationFile=file:./logback/docker-logback.xml
-                                            </extraArgument>
-                                        </extraArguments>
-                                    </jvmSettings>
-                                </program>
-                            </programs>
-
-                        </configuration>
-                    </execution>
-
-                    <!-- Create prometheus-agent jsw scripts -->
-                    <execution>
-
-                        <id>generate-agent-jsw-scripts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>generate-daemons</goal>
-                        </goals>
-
-                        <configuration>
-
-                            <generateRepository>true</generateRepository>
-                            <repositoryLayout>flat</repositoryLayout>
-                            <configurationDirectory>etc/agent</configurationDirectory>
-
-                            <daemons>
-                                <daemon>
-                                    <id>prometheus-agent</id>
-                                    <wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
-                                    <mainClass>io.prometheus.Agent</mainClass>
-
-                                    <platforms>
-                                        <platform>jsw</platform>
-                                    </platforms>
-
-                                    <generatorConfigurations>
-                                        <generatorConfiguration>
-                                            <generator>jsw</generator>
-                                            <includes>
-                                                <include>macosx-universal-64</include>
-                                                <include>linux-x86-64</include>
-                                                <include>solaris-sparc-64</include>
-                                                <include>windows-x86-64</include>
-                                            </includes>
-                                            <configuration>
-                                                <property>
-                                                    <name>configuration.directory.in.classpath.first</name>
-                                                    <value>etc</value>
-                                                </property>
-                                                <property>
-                                                    <name>set.default.REPO_DIR</name>
-                                                    <value>lib</value>
-                                                </property>
-                                                <property>
-                                                    <name>wrapper.logfile</name>
-                                                    <value>logs/wrapper.log</value>
-                                                </property>
-                                            </configuration>
-                                        </generatorConfiguration>
-                                    </generatorConfigurations>
-                                    <jvmSettings>
-                                        <initialMemorySize>256M</initialMemorySize>
-                                        <maxMemorySize>1024M</maxMemorySize>
-                                        <systemProperties>
-                                            <systemProperty>
-                                                logback.configurationFile=file:conf/agent.logback.xml
-                                            </systemProperty>
-                                        </systemProperties>
-                                        <extraArguments>
-                                            <extraArgument>-server</extraArgument>
-                                        </extraArguments>
-                                    </jvmSettings>
-
-                                </daemon>
-                            </daemons>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/grpc/*.class</exclude>
-                        <exclude>**/ConfigVals*.class</exclude>
-                        <exclude>**/ZipkinReporter*.class</exclude>
-                        <exclude>**/AutoValue_*.class</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
