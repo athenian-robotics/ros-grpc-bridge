@@ -17,7 +17,7 @@
         <protobuf.version>3.4.0</protobuf.version>
         <protobuf.plugin.version>0.5.0</protobuf.plugin.version>
         <guava.version>19.0</guava.version>
-        s
+
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
 
