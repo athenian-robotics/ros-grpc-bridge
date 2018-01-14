@@ -33,7 +33,8 @@ if __name__ == "__main__":
 
     count = 10000
 
-    def twit_gen(cnt):
+
+    def twist_gen(cnt):
         for i in range(cnt):
             twist_data = TwistData(linear_x=i,
                                    linear_y=i + 1,
@@ -46,7 +47,7 @@ if __name__ == "__main__":
 
 
     start1 = time.time()
-    bridge.stream_twist(twit_gen(count))
+    bridge.stream_twist(twist_gen(count))
     end1 = time.time()
     print("Stream elapsed: " + str(end1 - start1))
 
@@ -58,7 +59,7 @@ if __name__ == "__main__":
                                angular_x=i + 3,
                                angular_y=i + 4,
                                angular_z=i + 5)
-        #print("Sending data")
+        # print("Sending data")
         bridge.report_twist(twist_data)
     end2 = time.time()
     print("Nonstream elapsed: " + str(end2 - start2))
