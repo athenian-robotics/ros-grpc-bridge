@@ -19,12 +19,14 @@ public class RosBridge
 
   private static final Logger logger = LoggerFactory.getLogger(RosBridge.class);
 
+  private final int              port;
   private final RosBridgeService grpcService;
 
   public RosBridge(final RosBridgeOptions options,
                    final int port,
                    final String inProcessName,
                    final Consumer<TwistData> action) {
+    this.port = port;
     this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, action)
                                                     : RosBridgeService.create(this, inProcessName, action);
     this.init();
@@ -64,7 +66,7 @@ public class RosBridge
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-                      .add("port", this.grpcService.getPort())
+                      .add("port", this.port)
                       .toString();
   }
 }
