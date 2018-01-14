@@ -1,7 +1,8 @@
-package org.athenian;
+package org.athenian.core;
 
 import com.beust.jcommander.Parameter;
 import com.google.common.collect.Iterables;
+import org.athenian.RosBridge;
 import org.athenian.common.BaseOptions;
 
 import java.util.Collections;

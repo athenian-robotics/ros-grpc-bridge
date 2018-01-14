@@ -1,12 +1,11 @@
 package org.athenian;
 
-import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
-import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
-import io.grpc.stub.StreamObserver;
 import org.athenian.common.Utils;
+import org.athenian.core.RosClientOptions;
+import org.athenian.core.TwistDataStream;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
 import org.athenian.grpc.TwistData;
@@ -26,11 +25,11 @@ public class RosClient {
   private final AtomicReference<ManagedChannel>               channelRef      = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceBlockingStub> blockingStubRef = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceStub>         asyncStubRef    = new AtomicReference<>();
+
   private final String hostname;
   private final int    port;
 
-  public RosClient(final RosClientOptions options, final String inProcessServerName) {
-
+  public RosClient(final RosClientOptions options, final String inProcessName) {
     if (options.getHostname().contains(":")) {
       String[] vals = options.getHostname().split(":");
       this.hostname = vals[0];
@@ -41,12 +40,12 @@ public class RosClient {
       this.port = 50051;
     }
 
-    this.channelRef.set(isNullOrEmpty(inProcessServerName) ? NettyChannelBuilder.forAddress(this.hostname, this.port)
-                                                                                .usePlaintext(true)
-                                                                                .build()
-                                                           : InProcessChannelBuilder.forName(inProcessServerName)
-                                                                                    .usePlaintext(true)
-                                                                                    .build());
+    this.channelRef.set(isNullOrEmpty(inProcessName) ? NettyChannelBuilder.forAddress(this.hostname, this.port)
+                                                                          .usePlaintext(true)
+                                                                          .build()
+                                                     : InProcessChannelBuilder.forName(inProcessName)
+                                                                              .usePlaintext(true)
+                                                                              .build());
     logger.info("Creating gRPC stubs");
     this.blockingStubRef.set(newBlockingStub(intercept(this.getChannel())));
     this.asyncStubRef.set(newStub(intercept(this.getChannel())));
@@ -55,30 +54,9 @@ public class RosClient {
   public static void main(final String[] argv) {
     final RosClientOptions options = new RosClientOptions(argv);
     final RosClient rosClient = new RosClient(options, null);
-    rosClient.writeData();
-  }
 
-  public void writeData() {
-    final StreamObserver<TwistData> observer = this.getAsyncStub().reportTwistData(
-        new StreamObserver<Empty>() {
-          @Override
-          public void onNext(Empty empty) {
-            // Ignore Empty return value
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            final Status s = Status.fromThrowable(t);
-            logger.info("Error in writeResponsesToProxyUntilDisconnected(): {} {}", s.getCode(), s.getDescription());
-          }
-
-          @Override
-          public void onCompleted() {
-
-          }
-        });
-
-    for (int i = 0; i < 100; i++) {
+    int count = 10000;
+    for (int i = 0; i < count; i++) {
       TwistData data = TwistData.newBuilder()
                                 .setLinearX(i)
                                 .setLinearY(i + 1)
@@ -87,11 +65,32 @@ public class RosClient {
                                 .setAngularY(i + 4)
                                 .setAngularZ(i + 5)
                                 .build();
-      logger.info("Writing data");
-      observer.onNext(data);
+      rosClient.writeData(data);
     }
-    Utils.sleepForSecs(10);
-    observer.onCompleted();
+
+    try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
+      for (int i = 0; i < count; i++) {
+        TwistData data = TwistData.newBuilder()
+                                  .setLinearX(i)
+                                  .setLinearY(i + 1)
+                                  .setLinearZ(i + 2)
+                                  .setAngularX(i + 3)
+                                  .setAngularY(i + 4)
+                                  .setAngularZ(i + 5)
+                                  .build();
+        logger.info("Writing data");
+        stream.writeData(data);
+      }
+    }
+    Utils.sleepForSecs(2);
+  }
+
+  public void writeData(final TwistData data) {
+    this.getBlockingStub().writeTwistData(data);
+  }
+
+  public TwistDataStream newTwistDataStream() {
+    return new TwistDataStream(this.getAsyncStub());
   }
 
   private ManagedChannel getChannel() { return this.channelRef.get(); }

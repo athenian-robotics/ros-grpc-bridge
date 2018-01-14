@@ -3,8 +3,13 @@ package org.athenian;
 import com.google.common.base.MoreObjects;
 import org.athenian.common.GenericService;
 import org.athenian.common.Utils;
+import org.athenian.core.RosBridgeOptions;
+import org.athenian.core.RosBridgeService;
+import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -14,19 +19,26 @@ public class RosBridge
 
   private static final Logger logger = LoggerFactory.getLogger(RosBridge.class);
 
+  private final int              port;
   private final RosBridgeService grpcService;
 
   public RosBridge(final RosBridgeOptions options,
                    final int port,
-                   final String inProcessServerName) {
-    this.grpcService = isNullOrEmpty(inProcessServerName) ? RosBridgeService.create(this, port)
-                                                          : RosBridgeService.create(this, inProcessServerName);
+                   final String inProcessName,
+                   final Consumer<TwistData> action) {
+    this.port = port;
+    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, action)
+                                                    : RosBridgeService.create(this, inProcessName, action);
+    this.init();
   }
 
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
     final RosBridgeOptions options = new RosBridgeOptions(argv);
-    final RosBridge rosBridge = new RosBridge(options, options.getPort(), null);
+    final RosBridge rosBridge = new RosBridge(options,
+                                              options.getPort(),
+                                              null,
+                                              data -> logger.info("Got data {}", data));
     rosBridge.startAsync();
   }
 
@@ -54,7 +66,7 @@ public class RosBridge
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-                      .add("port", this.grpcService.getPort())
+                      .add("port", this.port)
                       .toString();
   }
 }

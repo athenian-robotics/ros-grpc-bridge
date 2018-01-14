@@ -1,0 +1,24 @@
+syntax = "proto3";
+package rosbridge_service;
+
+import public "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "org.athenian.grpc";
+
+message TwistData {
+    double linear_x = 2;
+    double linear_y = 3;
+    double linear_z = 4;
+    double angular_x = 5;
+    double angular_y = 6;
+    double angular_z = 7;
+}
+
+service RosBridgeService {
+    rpc writeTwistData (TwistData) returns (google.protobuf.Empty) {
+    }
+
+    rpc streamTwistData (stream TwistData) returns (google.protobuf.Empty) {
+    }
+}
