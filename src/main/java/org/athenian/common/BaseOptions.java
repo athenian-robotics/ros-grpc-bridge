@@ -55,13 +55,14 @@ public abstract class BaseOptions {
   }
 
   private void readParams() {
-    this.dynamicParams.forEach(
-        (key, value) -> {
-          // Strip quotes
-          final String prop = format("%s=%s", key, value.startsWith("\"") && value.endsWith("\"")
-                                                   ? value.substring(1, value.length() - 1)
-                                                   : value);
-          System.setProperty(key, prop);
-        });
+    this.dynamicParams
+        .forEach(
+            (key, value) -> {
+              // Strip quotes
+              final String prop = format("%s=%s", key, value.startsWith("\"") && value.endsWith("\"")
+                                                       ? value.substring(1, value.length() - 1)
+                                                       : value);
+              System.setProperty(key, prop);
+            });
   }
 }

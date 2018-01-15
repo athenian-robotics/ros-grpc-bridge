@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-
 public class RosBridge
     extends GenericService {
 
@@ -40,6 +39,8 @@ public class RosBridge
                                               null,
                                               data -> logger.info("Got data {}", data));
     rosBridge.startAsync();
+
+    Utils.sleepForSecs(Integer.MAX_VALUE);
   }
 
   @Override

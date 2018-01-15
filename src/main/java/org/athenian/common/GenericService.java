@@ -63,5 +63,4 @@ public abstract class GenericService
       public void failure(final Service service) { logger.info("{} service failed: {}", serviceName, service); }
     };
   }
-
 }

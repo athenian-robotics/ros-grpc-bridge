@@ -23,7 +23,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     package='rosbridge_service',
     syntax='proto3',
     serialized_pb=_b(
-        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\"z\n\tTwistData\x12\x10\n\x08linear_x\x18\x02 \x01(\x01\x12\x10\n\x08linear_y\x18\x03 \x01(\x01\x12\x10\n\x08linear_z\x18\x04 \x01(\x01\x12\x11\n\tangular_x\x18\x05 \x01(\x01\x12\x11\n\tangular_y\x18\x06 \x01(\x01\x12\x11\n\tangular_z\x18\x07 \x01(\x01\x32\xa9\x01\n\x10RosBridgeService\x12H\n\x0ewriteTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00\x12K\n\x0fstreamTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00(\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00\x62\x06proto3')
+        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\"z\n\tTwistData\x12\x10\n\x08linear_x\x18\x01 \x01(\x01\x12\x10\n\x08linear_y\x18\x02 \x01(\x01\x12\x10\n\x08linear_z\x18\x03 \x01(\x01\x12\x11\n\tangular_x\x18\x04 \x01(\x01\x12\x11\n\tangular_y\x18\x05 \x01(\x01\x12\x11\n\tangular_z\x18\x06 \x01(\x01\x32\xa9\x01\n\x10RosBridgeService\x12H\n\x0ewriteTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00\x12K\n\x0fstreamTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00(\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00\x62\x06proto3')
     ,
     dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ],
     public_dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
@@ -38,42 +38,42 @@ _TWISTDATA = _descriptor.Descriptor(
     fields=[
         _descriptor.FieldDescriptor(
             name='linear_x', full_name='rosbridge_service.TwistData.linear_x', index=0,
-            number=2, type=1, cpp_type=5, label=1,
+            number=1, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
             name='linear_y', full_name='rosbridge_service.TwistData.linear_y', index=1,
-            number=3, type=1, cpp_type=5, label=1,
+            number=2, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
             name='linear_z', full_name='rosbridge_service.TwistData.linear_z', index=2,
-            number=4, type=1, cpp_type=5, label=1,
+            number=3, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
             name='angular_x', full_name='rosbridge_service.TwistData.angular_x', index=3,
-            number=5, type=1, cpp_type=5, label=1,
+            number=4, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
             name='angular_y', full_name='rosbridge_service.TwistData.angular_y', index=4,
-            number=6, type=1, cpp_type=5, label=1,
+            number=5, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
             name='angular_z', full_name='rosbridge_service.TwistData.angular_z', index=5,
-            number=7, type=1, cpp_type=5, label=1,
+            number=6, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
@@ -125,7 +125,7 @@ try:
               channel: A grpc.Channel.
             """
             self.writeTwistData = channel.unary_unary(
-                '/rosbridge_service.RosBridgeService/writeData',
+                '/rosbridge_service.RosBridgeService/writeTwistData',
                 request_serializer=TwistData.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             )
@@ -151,7 +151,7 @@ try:
 
     def add_RosBridgeServiceServicer_to_server(servicer, server):
         rpc_method_handlers = {
-            'writeData': grpc.unary_unary_rpc_method_handler(
+            'writeTwistData': grpc.unary_unary_rpc_method_handler(
                 servicer.writeTwistData,
                 request_deserializer=TwistData.FromString,
                 response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
@@ -208,18 +208,18 @@ try:
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_deserializers = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.FromString,
-            ('rosbridge_service.RosBridgeService', 'writeData'): TwistData.FromString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.FromString,
         }
         response_serializers = {
             ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ('rosbridge_service.RosBridgeService',
-             'writeData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         }
         method_implementations = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): face_utilities.stream_unary_inline(
                 servicer.streamTwistData),
-            ('rosbridge_service.RosBridgeService', 'writeData'): face_utilities.unary_unary_inline(
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): face_utilities.unary_unary_inline(
                 servicer.writeTwistData),
         }
         server_options = beta_implementations.server_options(request_deserializers=request_deserializers,
@@ -238,17 +238,17 @@ try:
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_serializers = {
             ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.SerializeToString,
-            ('rosbridge_service.RosBridgeService', 'writeData'): TwistData.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.SerializeToString,
         }
         response_deserializers = {
             ('rosbridge_service.RosBridgeService',
              'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             ('rosbridge_service.RosBridgeService',
-             'writeData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         }
         cardinalities = {
             'streamTwistData': cardinality.Cardinality.STREAM_UNARY,
-            'writeData': cardinality.Cardinality.UNARY_UNARY,
+            'writeTwistData': cardinality.Cardinality.UNARY_UNARY,
         }
         stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer,
                                                          request_serializers=request_serializers,
