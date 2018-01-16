@@ -11,7 +11,8 @@ Install the *grpcio-tools* package with:
 pip install grpcio-tools
 ```
 
-Generate the python stubs with: 
+Generate the gRPC python stubs with: 
+
 ```bash
 make py-stubs
 ```
