@@ -21,8 +21,7 @@ public class RosBridge
   private final int              port;
   private final RosBridgeService grpcService;
 
-  public RosBridge(final RosBridgeOptions options,
-                   final int port,
+  public RosBridge(final int port,
                    final String inProcessName,
                    final Consumer<TwistData> action) {
     this.port = port;
@@ -34,8 +33,7 @@ public class RosBridge
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
     final RosBridgeOptions options = new RosBridgeOptions(argv);
-    final RosBridge rosBridge = new RosBridge(options,
-                                              options.getPort(),
+    final RosBridge rosBridge = new RosBridge(options.getPort(),
                                               null,
                                               data -> logger.info("Got data {}", data));
     rosBridge.startAsync();
