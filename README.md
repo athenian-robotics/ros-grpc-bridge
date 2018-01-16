@@ -2,7 +2,14 @@
 [![Build Status](https://travis-ci.org/athenian-robotics/ros-grpc-bridge.svg?branch=master)](https://travis-ci.org/athenian-robotics/ros-grpc-bridge)
 [![Dependency Status](https://www.versioneye.com/user/projects/5a5e3a6d0fb24f005807744b/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a5e3a6d0fb24f005807744b)
 
-# ROS gRPC Bridge  
+# ROS-gRPC Bridge  
+
+This ROS-gRPC bridge is intended to connect a [roboRIO](http://www.ni.com/en-us/support/model.roborio.html) 
+running Java and a ROS subsystem running Python on an [FRC](https://www.firstinspires.org/robotics/frc) robot.
+
+The supported message types are:
+* [Twist](http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html)
+ 
 
 ## Python Client Stubs
 
