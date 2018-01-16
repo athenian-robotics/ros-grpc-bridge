@@ -71,3 +71,12 @@ Add the JitPack repository and dependecy to your *pom.xml*:
 	    <version>1.0.2</version>
 	</dependency>
 ```
+
+## Create a Release
+
+1) Make the release changes. 
+2) Update the version string in *pom.xml* and *README.md*.
+3) Merge the release changes into the *master* branch.
+4) Create a release on github.com and assign it a tag, which matches the version string above.
+5) Goto [JitPack.io](http://jitpack.io) and lookup the *athenian-robotics/ros-grpc-bridge* repo and
+click on **Get it** for the new release tag to generate a build.
