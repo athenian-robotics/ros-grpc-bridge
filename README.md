@@ -26,7 +26,7 @@ Generate the gRPC python stubs with:
 make py-stubs
 ```
 
-The python stubs must be regenerated whenever changes are made to the *src/main/proto/rosbridge_service.proto* file.
+Regenerate the python stubs whenever changes are made to the *src/main/proto/rosbridge_service.proto* file.
 
 ## RosBridge Usage
 
