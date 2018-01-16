@@ -3,7 +3,20 @@
 
 # ROS gRPC Bridge  
 
-## Usage
+## Python Client Stubs
+
+Install the *grpcio-tools* package with:
+
+```bash
+pip install grpcio-tools
+```
+
+Generate the python stubs with: 
+```bash
+make py-stubs
+```
+
+## RosBridge Usage
 
 ### Gradle
 
