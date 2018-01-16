@@ -19,6 +19,8 @@ make py-stubs
 
 ## RosBridge Usage
 
+The *ros-grpc-bridge* jar files are published to [Jitpack.io](https://jitpack.io/#athenian-robotics/ros-grpc-bridge).
+
 ### Gradle
 
 Add the JitPack repository and dependecy to your root *build.gradle*:
