@@ -1,6 +1,5 @@
 [![](https://jitpack.io/v/athenian-robotics/ros-grpc-bridge.svg)](https://jitpack.io/#athenian-robotics/ros-grpc-bridge)
 [![Build Status](https://travis-ci.org/athenian-robotics/ros-grpc-bridge.svg?branch=master)](https://travis-ci.org/athenian-robotics/ros-grpc-bridge)
-[![Code Health](https://landscape.io/github/athenian-robotics/ros-grpc-bridge/dev/landscape.svg?style=flat)](https://landscape.io/github/athenian-robotics/ros-grpc-bridge/dev)
 [![Dependency Status](https://www.versioneye.com/user/projects/5a5e3a6d0fb24f005807744b/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5a5e3a6d0fb24f005807744b)
 
 # ROS-gRPC Bridge  
