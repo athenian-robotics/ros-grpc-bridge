@@ -30,7 +30,7 @@ Regenerate the python stubs whenever changes are made to the *src/main/proto/ros
 
 ## RosBridge Usage
 
-The *ros-grpc-bridge* jar files are published to [Jitpack.io](https://jitpack.io/#athenian-robotics/ros-grpc-bridge/1.0.2).
+The *ros-grpc-bridge* jar files are published to [Jitpack.io](https://jitpack.io/#athenian-robotics/ros-grpc-bridge/1.0.3).
 
 ### Gradle
 
@@ -47,7 +47,7 @@ Add the JitPack repository and dependecy to your root *build.gradle*:
 
 ```groovy
 	dependencies {
-	        compile 'com.github.athenian-robotics:ros-grpc-bridge:1.0.2'
+	        compile 'com.github.athenian-robotics:ros-grpc-bridge:1.0.3'
 	}
 ```
 
@@ -68,7 +68,7 @@ Add the JitPack repository and dependecy to your *pom.xml*:
 	<dependency>
 	    <groupId>com.github.athenian-robotics</groupId>
 	    <artifactId>ros-grpc-bridge</artifactId>
-	    <version>1.0.2</version>
+	    <version>1.0.3</version>
 	</dependency>
 ```
 
