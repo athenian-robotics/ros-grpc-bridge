@@ -6,15 +6,14 @@ from rosbridge_client import RosBridgeClient
 
 logger = logging.getLogger(__name__)
 
-
-# Define callback for Twist msgs
-def onTwistMsg(msg):
-    global bridge
-    twist_data = RosBridgeClient.newTwistData(msg.data.linear.x, msg.data.angular.z)
-    bridge.stream_twist(twist_data)
-
-
 if __name__ == "__main__":
+    # Define callback for Twist msgs
+    def onTwistMsg(msg):
+        global bridge
+        twist_data = RosBridgeClient.newTwistData(msg.data.linear.x, msg.data.angular.z)
+        bridge.stream_twist(twist_data)
+
+
     # Connect to bridge
     bridge = RosBridgeClient("localhost:50051")
 
