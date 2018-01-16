@@ -17,6 +17,8 @@ Generate the gRPC python stubs with:
 make py-stubs
 ```
 
+The python stubs must be regenerated whenever changes are made to the *src/main/proto/rosbridge_service.proto* file.
+
 ## RosBridge Usage
 
 The *ros-grpc-bridge* jar files are published to [Jitpack.io](https://jitpack.io/#athenian-robotics/ros-grpc-bridge/1.0.0).
