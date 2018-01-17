@@ -2,7 +2,6 @@ import logging
 import time
 
 from rosbridge_client import RosBridgeClient
-from stubs.rosbridge_service_pb2 import TwistData
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +14,7 @@ if __name__ == "__main__":
 
     def twist_gen(cnt):
         for i in range(cnt):
-            twist_data = TwistData(linear_x=i,
-                                   linear_y=i + 1,
-                                   linear_z=i + 2,
-                                   angular_x=i + 3,
-                                   angular_y=i + 4,
-                                   angular_z=i + 5)
+            twist_data = RosBridgeClient.newTwistData(i, i + 2)
             # print("Streaming data")
             yield twist_data
 
@@ -32,12 +26,7 @@ if __name__ == "__main__":
 
     start2 = time.time()
     for i in range(count):
-        twist_data = TwistData(linear_x=i,
-                               linear_y=i + 1,
-                               linear_z=i + 2,
-                               angular_x=i + 3,
-                               angular_y=i + 4,
-                               angular_z=i + 5)
+        twist_data = RosBridgeClient.newTwistData(i, i + 3)
         # print("Sending data")
         bridge.report_twist(twist_data)
     end2 = time.time()

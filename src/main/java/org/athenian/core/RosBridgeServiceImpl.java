@@ -34,16 +34,16 @@ class RosBridgeServiceImpl
   private static final Logger logger = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
 
   private final RosBridge           rosBridge;
-  private final Consumer<TwistData> action;
+  private final Consumer<TwistData> onMessageAction;
 
-  public RosBridgeServiceImpl(final RosBridge rosBridge, final Consumer<TwistData> action) {
+  public RosBridgeServiceImpl(final RosBridge rosBridge, final Consumer<TwistData> onMessageAction) {
     this.rosBridge = rosBridge;
-    this.action = action;
+    this.onMessageAction = onMessageAction;
   }
 
   @Override
   public void writeTwistData(final TwistData data, final StreamObserver<Empty> observer) {
-    this.action.accept(data);
+    this.onMessageAction.accept(data);
     observer.onNext(Empty.getDefaultInstance());
     observer.onCompleted();
   }
@@ -53,7 +53,7 @@ class RosBridgeServiceImpl
     return new StreamObserver<TwistData>() {
       @Override
       public void onNext(final TwistData data) {
-        action.accept(data);
+        onMessageAction.accept(data);
       }
 
       @Override

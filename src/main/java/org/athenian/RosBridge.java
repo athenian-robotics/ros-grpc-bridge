@@ -37,21 +37,28 @@ public class RosBridge
   private final int              port;
   private final RosBridgeService grpcService;
 
-  public RosBridge(final int port,
-                   final String inProcessName,
-                   final Consumer<TwistData> action) {
+  private RosBridge(final int port,
+                    final String inProcessName,
+                    final Consumer<TwistData> onMessageAction) {
     this.port = port;
-    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, action)
-                                                    : RosBridgeService.create(this, inProcessName, action);
+    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, onMessageAction)
+                                                    : RosBridgeService.create(this, inProcessName, onMessageAction);
     this.init();
+  }
+
+  public static RosBridge newRosBridge(final int port, final Consumer<TwistData> onMessageAction) {
+    return new RosBridge(port, null, onMessageAction);
+  }
+
+  public static RosBridge newRosBridge(final String inProcessName, final Consumer<TwistData> onMessageAction) {
+    return new RosBridge(-1, inProcessName, onMessageAction);
   }
 
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
     final RosBridgeOptions options = new RosBridgeOptions(argv);
-    final RosBridge rosBridge = new RosBridge(options.getPort(),
-                                              null,
-                                              data -> logger.info("Got data {}", data));
+    final RosBridge rosBridge = newRosBridge(options.getPort(),
+                                             data -> logger.info("Got data {}", data));
     rosBridge.startAsync();
 
     Utils.sleepForSecs(Integer.MAX_VALUE);
