@@ -40,6 +40,7 @@ Add the JitPack repository and dependecy to your root *build.gradle*:
 	allprojects {
 		repositories {
 			...
+			mavenCentral()
 			maven { url 'https://jitpack.io' }
 		}
 	}
