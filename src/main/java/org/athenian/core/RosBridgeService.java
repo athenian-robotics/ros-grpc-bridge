@@ -47,12 +47,12 @@ public class RosBridgeService
   private RosBridgeService(final RosBridge rosBridge,
                            final int port,
                            final String serverName,
-                           final Consumer<TwistData> action) {
+                           final Consumer<TwistData> onMessageAction) {
     this.port = port;
     this.serverName = serverName;
     this.inProcessServer = !isNullOrEmpty(serverName);
 
-    final RosBridgeServiceImpl rosBridgeService = new RosBridgeServiceImpl(rosBridge, action);
+    final RosBridgeServiceImpl rosBridgeService = new RosBridgeServiceImpl(rosBridge, onMessageAction);
     this.grpcServer = this.inProcessServer ? InProcessServerBuilder.forName(this.serverName)
                                                                    .addService(rosBridgeService)
                                                                    .build()
@@ -64,14 +64,14 @@ public class RosBridgeService
 
   public static RosBridgeService create(final RosBridge rosBridge,
                                         final int grpcPort,
-                                        final Consumer<TwistData> action) {
-    return new RosBridgeService(rosBridge, grpcPort, null, action);
+                                        final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeService(rosBridge, grpcPort, null, onMessageAction);
   }
 
   public static RosBridgeService create(final RosBridge rosBridge,
                                         final String serverName,
-                                        final Consumer<TwistData> action) {
-    return new RosBridgeService(rosBridge, -1, Preconditions.checkNotNull(serverName), action);
+                                        final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeService(rosBridge, -1, Preconditions.checkNotNull(serverName), onMessageAction);
   }
 
   @Override

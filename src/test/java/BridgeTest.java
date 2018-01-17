@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.athenian.RosBridge.newRosBridge;
 
 public class BridgeTest {
 
@@ -44,7 +45,7 @@ public class BridgeTest {
   @BeforeClass
   public static void setUp() {
     final RosBridgeOptions options = new RosBridgeOptions(EMPTY_ARGV);
-    ROSBRIDGE = new RosBridge(options.getPort(), null, data -> COUNTER.incrementAndGet());
+    ROSBRIDGE = newRosBridge(options.getPort(), data -> COUNTER.incrementAndGet());
     ROSBRIDGE.startAsync();
   }
 
