@@ -22,6 +22,3 @@ plugincheck:
 	./mvnw versions:display-plugin-updates
 
 versioncheck: jarcheck plugincheck
-
-
-
