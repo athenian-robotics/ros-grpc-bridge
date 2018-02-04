@@ -19,9 +19,9 @@ class RosBridgeClient(object):
         except BaseException as e:
             logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
 
-    def stream_twist(self, iter):
+    def stream_twist(self, iter_val):
         try:
-            self.__stub.streamTwistData(iter)
+            self.__stub.streamTwistData(iter_val)
         except BaseException as e:
             logger.error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
 
