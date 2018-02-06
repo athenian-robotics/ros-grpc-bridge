@@ -5,13 +5,13 @@ from rosbridge_client import RosBridgeClient
 
 logger = logging.getLogger(__name__)
 
-if __name__ == "__main__":
 
+def main():
     bridge = RosBridgeClient("localhost:50051")
 
     count = 10000
 
-    # Non-stremaing version
+    # Non-streaming version
     start1 = time.time()
     for i in range(count):
         twist_data = RosBridgeClient.newTwistData(i, i + 3)
@@ -33,3 +33,7 @@ if __name__ == "__main__":
     print("Streaming elapsed: " + str(end2 - start2))
 
     time.sleep(10)
+
+
+if __name__ == "__main__":
+    main()
