@@ -26,18 +26,21 @@ class RosBridgeClient(object):
             self.__stub.writeTwistData(twist_data)
         except BaseException as e:
             self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
+            raise e
 
     def stream_twist(self, iter_val):
         try:
             self.__stub.streamTwistData(iter_val)
         except BaseException as e:
             self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
+            raise e
 
     def read_encoder(self, encoder_name):
         try:
             return self.__stub.readEncoderData(EncoderDesc(name=encoder_name))
         except BaseException as e:
             self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
+            raise e
 
     @staticmethod
     def newTwistData(lin, ang):

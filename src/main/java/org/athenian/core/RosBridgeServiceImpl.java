@@ -82,10 +82,10 @@ class RosBridgeServiceImpl
   }
 
   @Override
-  public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> responseObserver) {
+  public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> observer) {
     logger.info("Returning encoder data for: " + request.getName());
     for (int i = 0; i < 20; i++)
-      responseObserver.onNext(EncoderData.newBuilder().setValue(i).build());
-    responseObserver.onCompleted();
+      observer.onNext(EncoderData.newBuilder().setValue(i).build());
+    observer.onCompleted();
   }
 }
