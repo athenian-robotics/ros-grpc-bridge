@@ -33,33 +33,37 @@ public class TwistDataStream
   private final StreamObserver<TwistData> observer;
 
   public TwistDataStream(RosBridgeServiceGrpc.RosBridgeServiceStub asyncStub) {
-    this.observer = asyncStub.streamTwistData(
-        new StreamObserver<Empty>() {
-          @Override
-          public void onNext(Empty empty) {
-            // Ignore Empty return value
-          }
+    this.observer =
+        asyncStub.streamTwistData(
+            new StreamObserver<Empty>() {
+              @Override
+              public void onNext(Empty empty) {
+                // Ignore Empty return value
+                logger.info("Empty value returned by server");
+              }
 
-          @Override
-          public void onError(Throwable t) {
-            final Status s = Status.fromThrowable(t);
-            logger.info("Error in TwistDataStream: {} {}", s.getCode(), s.getDescription());
-          }
+              @Override
+              public void onError(Throwable t) {
+                final Status s = Status.fromThrowable(t);
+                logger.info("Error in TwistDataStream: {} {}", s.getCode(), s.getDescription());
+              }
 
-          @Override
-          public void onCompleted() {
-
-          }
-        });
+              @Override
+              public void onCompleted() {
+                logger.info("Server acknowledged completion of call");
+              }
+            });
   }
 
-  public void writeData(TwistData data) {
-    logger.info("Writing data");
+  public void writeTwistData(TwistData data) {
+    logger.info("Writing twist data to server");
     this.observer.onNext(data);
   }
 
+  // Signal to the server that we are done streaming data
   @Override
   public void close() {
+    logger.info("Completed writing twist data to server");
     this.observer.onCompleted();
   }
 }

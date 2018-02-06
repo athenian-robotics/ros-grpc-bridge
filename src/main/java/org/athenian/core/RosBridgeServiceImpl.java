@@ -21,6 +21,8 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.athenian.RosBridge;
+import org.athenian.grpc.EncoderData;
+import org.athenian.grpc.EncoderDesc;
 import org.athenian.grpc.RosBridgeServiceGrpc;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
@@ -77,5 +79,13 @@ class RosBridgeServiceImpl
         observer.onCompleted();
       }
     };
+  }
+
+  @Override
+  public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> responseObserver) {
+    logger.info("Returning encoder data for: " + request.getName());
+    for (int i = 0; i < 20; i++)
+      responseObserver.onNext(EncoderData.newBuilder().setValue(i).build());
+    responseObserver.onCompleted();
   }
 }

@@ -22,12 +22,15 @@ import io.grpc.netty.NettyChannelBuilder;
 import org.athenian.common.Utils;
 import org.athenian.core.RosClientOptions;
 import org.athenian.core.TwistDataStream;
+import org.athenian.grpc.EncoderData;
+import org.athenian.grpc.EncoderDesc;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -71,7 +74,7 @@ public class RosClient {
     final RosClientOptions options = new RosClientOptions(argv);
     final RosClient rosClient = new RosClient(options, null);
 
-    int count = 10000;
+    int count = 20;
     for (int i = 0; i < count; i++) {
       TwistData data = TwistData.newBuilder()
                                 .setLinearX(i)
@@ -81,7 +84,7 @@ public class RosClient {
                                 .setAngularY(i + 4)
                                 .setAngularZ(i + 5)
                                 .build();
-      rosClient.writeData(data);
+      rosClient.writeTwistData(data);
     }
 
     try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
@@ -94,15 +97,28 @@ public class RosClient {
                                   .setAngularY(i + 4)
                                   .setAngularZ(i + 5)
                                   .build();
-        logger.info("Writing data");
-        stream.writeData(data);
+        stream.writeTwistData(data);
       }
     }
+
+    Utils.sleepForSecs(2);
+
+    final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
+    while (encoderDataIter.hasNext()) {
+      EncoderData encoderData = encoderDataIter.next();
+      logger.info("Read encoder value: " + encoderData.getValue());
+    }
+
     Utils.sleepForSecs(2);
   }
 
-  public void writeData(final TwistData data) {
+  public void writeTwistData(final TwistData data) {
     this.getBlockingStub().writeTwistData(data);
+  }
+
+  public Iterator<EncoderData> readEncoderData(final String encoderName) {
+    final EncoderDesc encoderDesc = EncoderDesc.newBuilder().setName(encoderName).build();
+    return this.getBlockingStub().readEncoderData(encoderDesc);
   }
 
   public TwistDataStream newTwistDataStream() {

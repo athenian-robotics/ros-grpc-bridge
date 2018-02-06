@@ -21,6 +21,7 @@ import org.athenian.common.Utils;
 import org.athenian.core.RosBridgeOptions;
 import org.athenian.core.RosClientOptions;
 import org.athenian.core.TwistDataStream;
+import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.TwistData;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -57,7 +59,7 @@ public class BridgeTest {
   }
 
   @Test
-  public void blockingTest() {
+  public void blockingTwistTest() {
     final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
     final RosClient rosClient = new RosClient(options, null);
     long start = COUNTER.get();
@@ -71,7 +73,7 @@ public class BridgeTest {
                                 .setAngularY(i + 4)
                                 .setAngularZ(i + 5)
                                 .build();
-      rosClient.writeData(data);
+      rosClient.writeTwistData(data);
     }
 
     Utils.sleepForSecs(3);
@@ -79,7 +81,7 @@ public class BridgeTest {
   }
 
   @Test
-  public void streamingTest() {
+  public void streamingTwistTest() {
     final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
     final RosClient rosClient = new RosClient(options, null);
     long start = COUNTER.get();
@@ -95,11 +97,29 @@ public class BridgeTest {
                                   .setAngularY(i + 4)
                                   .setAngularZ(i + 5)
                                   .build();
-        stream.writeData(data);
+        stream.writeTwistData(data);
       }
     }
 
     Utils.sleepForSecs(3);
     Assertions.assertThat(start + count == COUNTER.get());
+  }
+
+  @Test
+  public void streamingEncoderTest() {
+    final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
+    final RosClient rosClient = new RosClient(options, null);
+
+    final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
+    int cnt = 0;
+    while (encoderDataIter.hasNext()) {
+      EncoderData encoderData = encoderDataIter.next();
+      logger.info("Read encoder value: " + encoderData.getValue());
+      Assertions.assertThat(cnt == (int) encoderData.getValue());
+      cnt++;
+    }
+
+    Utils.sleepForSecs(3);
+    Assertions.assertThat(cnt == 20);
   }
 }

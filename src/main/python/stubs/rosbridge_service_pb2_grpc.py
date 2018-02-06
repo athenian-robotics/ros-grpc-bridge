@@ -23,6 +23,11 @@ class RosBridgeServiceStub(object):
             request_serializer=rosbridge__service__pb2.TwistData.SerializeToString,
             response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         )
+        self.readEncoderData = channel.unary_stream(
+            '/rosbridge_service.RosBridgeService/readEncoderData',
+            request_serializer=rosbridge__service__pb2.EncoderDesc.SerializeToString,
+            response_deserializer=rosbridge__service__pb2.EncoderData.FromString,
+        )
 
 
 class RosBridgeServiceServicer(object):
@@ -33,6 +38,11 @@ class RosBridgeServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def streamTwistData(self, request_iterator, context):
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def readEncoderData(self, request, context):
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -49,6 +59,11 @@ def add_RosBridgeServiceServicer_to_server(servicer, server):
             servicer.streamTwistData,
             request_deserializer=rosbridge__service__pb2.TwistData.FromString,
             response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+        ),
+        'readEncoderData': grpc.unary_stream_rpc_method_handler(
+            servicer.readEncoderData,
+            request_deserializer=rosbridge__service__pb2.EncoderDesc.FromString,
+            response_serializer=rosbridge__service__pb2.EncoderData.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
