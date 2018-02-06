@@ -1,10 +1,12 @@
 import logging
 import rospy
+from arc852.utils import setup_logging
 from geometry_msgs.msg import Twist
 
 from rosbridge_client import RosBridgeClient
 
 logger = logging.getLogger(__name__)
+setup_logging()
 
 
 def main():
