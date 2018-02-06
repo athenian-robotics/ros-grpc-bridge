@@ -1,22 +1,22 @@
-import logging
 import time
 
 from rosbridge_client import RosBridgeClient
 
-logger = logging.getLogger(__name__)
+
+# logger = logging.getLogger(__name__)
 
 
 def main():
     bridge = RosBridgeClient("localhost:50051")
 
-    count = 10000
+    count = 100
 
     # Non-streaming version
     start1 = time.time()
     for i in range(count):
         twist_data = RosBridgeClient.newTwistData(i, i + 3)
         # print("Sending data")
-        bridge.report_twist(twist_data)
+        bridge.write_twist(twist_data)
     end1 = time.time()
     print("Non-streaming elapsed: " + str(end1 - start1))
 
@@ -32,7 +32,11 @@ def main():
     end2 = time.time()
     print("Streaming elapsed: " + str(end2 - start2))
 
-    time.sleep(10)
+    time.sleep(2)
+
+    # Read streming encoder values
+    for data in bridge.read_encoder("wheel2"):
+        print("Read encoder value: " + str(data.value))
 
 
 if __name__ == "__main__":
