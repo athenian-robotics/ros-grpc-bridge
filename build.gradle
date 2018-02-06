@@ -1,12 +1,7 @@
 group = 'org.athenian'
 version = '1.0.0-SNAPSHOT'
-//archivesBaseName = 'ros-grpc-bridge'
-
-//sourceCompatibility = 1.8
-//targetCompatibility = 1.8
 
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'com.google.protobuf'
 
 buildscript {
@@ -20,15 +15,21 @@ buildscript {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def grpcVersion = '1.9.0'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'io.grpc:grpc-all:1.9.0'
-    compile 'com.beust:jcommander:1.72'
-    compile 'org.slf4j:jul-to-slf4j:1.7.25'
-    compile 'com.typesafe:config:1.3.2'
-    compile 'org.assertj:assertj-core:3.9.0'
+    compile "io.grpc:grpc-all:${grpcVersion}"
+    compile "com.beust:jcommander:1.72"
+    compile "org.slf4j:jul-to-slf4j:1.7.25"
+    compile "com.typesafe:config:1.3.2"
+    compile "org.assertj:assertj-core:3.9.0"
 }
 
 protobuf {
@@ -40,7 +41,7 @@ protobuf {
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.9.0'
+            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
         }
     }
 
@@ -53,26 +54,16 @@ protobuf {
     }
 }
 
-
 sourceSets {
     main {
         java {
-            srcDirs 'src/generated/main/grpc'
-            srcDirs 'src/generated/main/java'
+            srcDirs += 'src/generated/main/grpc'
+            srcDirs += 'src/generated/main/java'
         }
     }
 }
 
-jar {
-    manifest {
-        attributes "Main-Class": "org.athenian.RosBridge"
-    }
-
-    archiveName 'ros-grpc-bridge.jar'
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+apply plugin: 'idea'
 
 idea {
     module {
@@ -85,10 +76,27 @@ clean {
     delete "${projectDir}/src/generated"
 }
 
-// Let intellij projects refer to generated code
-//idea {
-//    module {
-//        sourceDirs += file('${projectDir}/src/generated/main/java');
-//        sourceDirs += file('${projectDir}/src/generated/main/grpc');
-//    }
-//}
+apply plugin: 'application'
+
+startScripts.enabled = false
+
+task rosBridge(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.RosBridge'
+    applicationName = 'ros-bridge'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+task rosClient(type: CreateStartScripts) {
+    mainClassName = 'org.athenian.RosClient'
+    applicationName = 'ros-client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+applicationDistribution.into('bin') {
+    from(rosBridge)
+    from(rosClient)
+    fileMode = 0755
+}
+

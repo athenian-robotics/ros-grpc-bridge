@@ -1,13 +1,19 @@
-default: build
+default: mbuild
 
-build:
+mbuild:
 	./mvnw -DskipTests=true clean package
 
-tests:
+mtests:
 	./mvnw clean package
 
-clean:
+gtests:
+	./gradlew clean package
+
+mclean:
 	./mvnw clean
+
+gclean:
+	./gradlew clean
 
 py-stubs:
 	python -m grpc_tools.protoc -I./src/main/proto --python_out=./src/main/python/stubs --grpc_python_out=./src/main/python/stubs ./src/main/proto/rosbridge_service.proto
