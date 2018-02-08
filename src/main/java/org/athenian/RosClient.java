@@ -72,6 +72,7 @@ public class RosClient {
 
   public static void main(final String[] argv) {
     final RosClientOptions options = new RosClientOptions(argv);
+    options.init();
     final RosClient rosClient = new RosClient(options, null);
 
     int count = 20;

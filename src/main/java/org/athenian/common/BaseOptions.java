@@ -37,7 +37,8 @@ public abstract class BaseOptions {
 
   private final AtomicReference<Config> configRef = new AtomicReference<>();
 
-  private final String programName;
+  private final String   programName;
+  private final String[] argv;
 
   @Parameter(names = {"-c", "--conf", "--config"}, description = "Configuration file or pingUrl")
   private String              configName    = null;
@@ -48,8 +49,13 @@ public abstract class BaseOptions {
 
   protected BaseOptions(final String programName, final String[] argv) {
     this.programName = programName;
-    this.parseArgs(argv);
+    this.argv = argv;
+  }
+
+  public BaseOptions init() {
+    this.parseArgs(this.argv);
     this.readParams();
+    return this;
   }
 
   private void parseArgs(final String[] argv) {

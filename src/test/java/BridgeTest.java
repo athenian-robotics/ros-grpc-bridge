@@ -61,6 +61,7 @@ public class BridgeTest {
   @Test
   public void blockingTwistTest() {
     final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
+    options.init();
     final RosClient rosClient = new RosClient(options, null);
     long start = COUNTER.get();
     final int count = 1000;
@@ -83,6 +84,7 @@ public class BridgeTest {
   @Test
   public void streamingTwistTest() {
     final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
+    options.init();
     final RosClient rosClient = new RosClient(options, null);
     long start = COUNTER.get();
     final int count = 1000;
@@ -108,6 +110,7 @@ public class BridgeTest {
   @Test
   public void streamingEncoderTest() {
     final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
+    options.init();
     final RosClient rosClient = new RosClient(options, null);
 
     final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
