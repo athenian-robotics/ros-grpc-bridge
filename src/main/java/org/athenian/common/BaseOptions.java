@@ -48,7 +48,7 @@ public abstract class BaseOptions {
     this.argv = argv;
   }
 
-  // This has to be called by each accessor
+  // This has to be called by each subclass
   protected BaseOptions init() {
     if (!this.initCalled.get()) {
       this.parseArgs(this.argv);

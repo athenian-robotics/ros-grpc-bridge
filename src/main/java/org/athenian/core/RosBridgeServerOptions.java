@@ -36,10 +36,10 @@ public class RosBridgeServerOptions
 
   public RosBridgeServerOptions(final String[] argv) {
     super(RosBridgeServer.class.getSimpleName(), argv);
+    this.init();
   }
 
   public int getPort() {
-    this.init();
     return this.port;
   }
 }
