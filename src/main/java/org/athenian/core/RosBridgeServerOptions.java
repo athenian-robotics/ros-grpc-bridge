@@ -38,5 +38,8 @@ public class RosBridgeServerOptions
     super(RosBridgeServer.class.getSimpleName(), argv);
   }
 
-  public int getPort() { return this.port; }
+  public int getPort() {
+    this.init();
+    return this.port;
+  }
 }

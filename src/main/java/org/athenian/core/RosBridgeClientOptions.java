@@ -38,5 +38,8 @@ public class RosBridgeClientOptions
     super(RosBridgeClient.class.getName(), argv);
   }
 
-  public String getHostname() { return this.hostname; }
+  public String getHostname() {
+    this.init();
+    return this.hostname;
+  }
 }

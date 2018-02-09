@@ -74,17 +74,19 @@ public class RosBridgeClient {
 
   public static RosBridgeClient newClient() {
     final RosBridgeClientOptions options = new RosBridgeClientOptions(new String[] {});
-    options.init();
     return new RosBridgeClient(options.getHostname(), "");
   }
 
+  public static RosBridgeClient newClient(final String inProcessName) {
+    final RosBridgeClientOptions options = new RosBridgeClientOptions(new String[] {});
+    return new RosBridgeClient(options.getHostname(), inProcessName);
+  }
+
   public static RosBridgeClient newClient(final RosBridgeClientOptions options) {
-    options.init();
     return new RosBridgeClient(options.getHostname(), "");
   }
 
   public static RosBridgeClient newClient(final RosBridgeClientOptions options, final String inProcessName) {
-    options.init();
     return new RosBridgeClient(options.getHostname(), inProcessName);
   }
 

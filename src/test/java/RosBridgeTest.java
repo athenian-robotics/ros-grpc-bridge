@@ -18,7 +18,6 @@ import org.assertj.core.api.Assertions;
 import org.athenian.RosBridgeClient;
 import org.athenian.RosBridgeServer;
 import org.athenian.common.Utils;
-import org.athenian.core.RosBridgeServerOptions;
 import org.athenian.core.TwistDataStream;
 import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.TwistData;
@@ -34,17 +33,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class BridgeTest {
+public class RosBridgeTest {
 
-  private static final Logger     logger  = LoggerFactory.getLogger(BridgeTest.class);
+  private static final Logger     logger  = LoggerFactory.getLogger(RosBridgeTest.class);
   private static final AtomicLong COUNTER = new AtomicLong();
 
   private static RosBridgeServer ROSBRIDGE = null;
 
   @BeforeClass
   public static void setUp() {
-    ROSBRIDGE = RosBridgeServer.newServer(new RosBridgeServerOptions(new String[] {}),
-                                          data -> COUNTER.incrementAndGet());
+    ROSBRIDGE = RosBridgeServer.newServer(data -> COUNTER.incrementAndGet());
     ROSBRIDGE.startAsync();
   }
 

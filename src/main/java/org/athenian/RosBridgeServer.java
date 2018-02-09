@@ -46,9 +46,13 @@ public class RosBridgeServer
     this.init();
   }
 
+  public static RosBridgeServer newServer(final Consumer<TwistData> onMessageAction) {
+    final RosBridgeServerOptions options = new RosBridgeServerOptions(new String[] {});
+    return new RosBridgeServer(options.getPort(), null, onMessageAction);
+  }
+
   public static RosBridgeServer newServer(final RosBridgeServerOptions options,
                                           final Consumer<TwistData> onMessageAction) {
-    options.init();
     return new RosBridgeServer(options.getPort(), null, onMessageAction);
   }
 
@@ -58,9 +62,7 @@ public class RosBridgeServer
 
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
-    final RosBridgeServerOptions options = new RosBridgeServerOptions(argv);
-    final RosBridgeServer rosBridgeServer = newServer(options,
-                                                      data -> logger.info("Got data {}", data));
+    final RosBridgeServer rosBridgeServer = newServer(data -> logger.info("Got data {}", data));
     rosBridgeServer.startAsync();
 
     Utils.sleepForSecs(Integer.MAX_VALUE);

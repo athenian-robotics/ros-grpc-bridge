@@ -67,15 +67,16 @@ public abstract class GenericService
 
   protected ServiceManager.Listener newListener() {
     final String serviceName = this.getClass().getSimpleName();
-    return new ServiceManager.Listener() {
-      @Override
-      public void healthy() { logger.info("All {} services healthy", serviceName); }
+    return
+        new ServiceManager.Listener() {
+          @Override
+          public void healthy() { logger.info("All {} services healthy", serviceName); }
 
-      @Override
-      public void stopped() { logger.info("All {} services stopped", serviceName); }
+          @Override
+          public void stopped() { logger.info("All {} services stopped", serviceName); }
 
-      @Override
-      public void failure(final Service service) { logger.info("{} service failed: {}", serviceName, service); }
-    };
+          @Override
+          public void failure(final Service service) { logger.info("{} service failed: {}", serviceName, service); }
+        };
   }
 }
