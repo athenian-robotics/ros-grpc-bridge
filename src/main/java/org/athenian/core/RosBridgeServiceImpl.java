@@ -21,6 +21,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.athenian.RosBridge;
+import org.athenian.RosClient;
 import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.EncoderDesc;
 import org.athenian.grpc.RosBridgeServiceGrpc;
@@ -84,7 +85,7 @@ class RosBridgeServiceImpl
   @Override
   public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> observer) {
     logger.info("Returning encoder data for: " + request.getName());
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < RosClient.COUNT; i++)
       observer.onNext(EncoderData.newBuilder().setValue(i).build());
     observer.onCompleted();
   }

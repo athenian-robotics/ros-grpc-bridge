@@ -40,6 +40,8 @@ import static org.athenian.grpc.RosBridgeServiceGrpc.newStub;
 
 public class RosClient {
   private static final Logger logger = LoggerFactory.getLogger(RosClient.class);
+  public static final  int    REPEAT = 100;
+  public static final  int    COUNT  = 200;
 
   private final AtomicReference<ManagedChannel>               channelRef      = new AtomicReference<>();
   private final AtomicReference<RosBridgeServiceBlockingStub> blockingStubRef = new AtomicReference<>();
@@ -75,42 +77,43 @@ public class RosClient {
     options.init();
     final RosClient rosClient = new RosClient(options, null);
 
-    int count = 20;
-    for (int i = 0; i < count; i++) {
-      TwistData data = TwistData.newBuilder()
-                                .setLinearX(i)
-                                .setLinearY(i + 1)
-                                .setLinearZ(i + 2)
-                                .setAngularX(i + 3)
-                                .setAngularY(i + 4)
-                                .setAngularZ(i + 5)
-                                .build();
-      rosClient.writeTwistData(data);
-    }
-
-    try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
-      for (int i = 0; i < count; i++) {
+    for (int i = 0; i < REPEAT; i++) {
+      for (int j = 0; j < COUNT; j++) {
         TwistData data = TwistData.newBuilder()
-                                  .setLinearX(i)
-                                  .setLinearY(i + 1)
-                                  .setLinearZ(i + 2)
-                                  .setAngularX(i + 3)
-                                  .setAngularY(i + 4)
-                                  .setAngularZ(i + 5)
+                                  .setLinearX(j)
+                                  .setLinearY(j + 1)
+                                  .setLinearZ(j + 2)
+                                  .setAngularX(j + 3)
+                                  .setAngularY(j + 4)
+                                  .setAngularZ(j + 5)
                                   .build();
-        stream.writeTwistData(data);
+        rosClient.writeTwistData(data);
       }
+
+      try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
+        for (int j = 0; j < COUNT; j++) {
+          TwistData data = TwistData.newBuilder()
+                                    .setLinearX(j)
+                                    .setLinearY(j + 1)
+                                    .setLinearZ(j + 2)
+                                    .setAngularX(j + 3)
+                                    .setAngularY(j + 4)
+                                    .setAngularZ(j + 5)
+                                    .build();
+          stream.writeTwistData(data);
+        }
+      }
+
+      Utils.sleepForSecs(1);
+
+      final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
+      while (encoderDataIter.hasNext()) {
+        EncoderData encoderData = encoderDataIter.next();
+        logger.info("Read encoder value: " + encoderData.getValue());
+      }
+
+      Utils.sleepForSecs(1);
     }
-
-    Utils.sleepForSecs(2);
-
-    final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
-    while (encoderDataIter.hasNext()) {
-      EncoderData encoderData = encoderDataIter.next();
-      logger.info("Read encoder value: " + encoderData.getValue());
-    }
-
-    Utils.sleepForSecs(2);
   }
 
   public void writeTwistData(final TwistData data) {
