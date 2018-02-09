@@ -20,13 +20,12 @@ import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.String.format;
 
@@ -35,13 +34,10 @@ public abstract class BaseOptions {
   private static final Logger   logger     = LoggerFactory.getLogger(BaseOptions.class);
   private static final String[] EMPTY_ARGV = {};
 
-  private final AtomicReference<Config> configRef = new AtomicReference<>();
+  private final AtomicBoolean initCalled = new AtomicBoolean(false);
+  private final String        programName;
+  private final String[]      argv;
 
-  private final String   programName;
-  private final String[] argv;
-
-  @Parameter(names = {"-c", "--conf", "--config"}, description = "Configuration file or pingUrl")
-  private String              configName    = null;
   @Parameter(names = {"-u", "--usage"}, help = true)
   private boolean             usage         = false;
   @DynamicParameter(names = "-D", description = "Dynamic property assignment")
@@ -53,8 +49,11 @@ public abstract class BaseOptions {
   }
 
   public BaseOptions init() {
-    this.parseArgs(this.argv);
-    this.readParams();
+    if (!this.initCalled.get()) {
+      this.parseArgs(this.argv);
+      this.readParams();
+      this.initCalled.set(true);
+    }
     return this;
   }
 

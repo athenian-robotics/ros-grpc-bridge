@@ -20,8 +20,8 @@ import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
-import org.athenian.RosBridge;
-import org.athenian.RosClient;
+import org.athenian.RosBridgeClient;
+import org.athenian.RosBridgeServer;
 import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.EncoderDesc;
 import org.athenian.grpc.RosBridgeServiceGrpc;
@@ -36,11 +36,11 @@ class RosBridgeServiceImpl
 
   private static final Logger logger = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
 
-  private final RosBridge           rosBridge;
+  private final RosBridgeServer     rosBridgeServer;
   private final Consumer<TwistData> onMessageAction;
 
-  public RosBridgeServiceImpl(final RosBridge rosBridge, final Consumer<TwistData> onMessageAction) {
-    this.rosBridge = rosBridge;
+  public RosBridgeServiceImpl(final RosBridgeServer rosBridgeServer, final Consumer<TwistData> onMessageAction) {
+    this.rosBridgeServer = rosBridgeServer;
     this.onMessageAction = onMessageAction;
   }
 
@@ -85,7 +85,7 @@ class RosBridgeServiceImpl
   @Override
   public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> observer) {
     logger.info("Returning encoder data for: " + request.getName());
-    for (int i = 0; i < RosClient.COUNT; i++)
+    for (int i = 0; i < RosBridgeClient.COUNT; i++)
       observer.onNext(EncoderData.newBuilder().setValue(i).build());
     observer.onCompleted();
   }

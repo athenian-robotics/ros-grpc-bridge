@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
 
 public abstract class GenericService
@@ -34,11 +33,12 @@ public abstract class GenericService
 
   private static final Logger logger = LoggerFactory.getLogger(GenericService.class);
 
-  private final List<Service> services = Lists.newArrayList(this);
+  private final List<Service> services = Lists.newArrayList();
 
   private ServiceManager serviceManager = null;
 
   protected GenericService() {
+    this.addService(this);
     this.addListener(new GenericServiceListener(this), MoreExecutors.directExecutor());
   }
 
@@ -55,8 +55,7 @@ public abstract class GenericService
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() {
     this.stopAsync();
   }
 

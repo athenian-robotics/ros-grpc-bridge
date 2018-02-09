@@ -20,7 +20,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
 import org.athenian.common.Utils;
-import org.athenian.core.RosClientOptions;
+import org.athenian.core.RosBridgeClientOptions;
 import org.athenian.core.TwistDataStream;
 import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.EncoderDesc;
@@ -38,8 +38,8 @@ import static io.grpc.ClientInterceptors.intercept;
 import static org.athenian.grpc.RosBridgeServiceGrpc.newBlockingStub;
 import static org.athenian.grpc.RosBridgeServiceGrpc.newStub;
 
-public class RosClient {
-  private static final Logger logger = LoggerFactory.getLogger(RosClient.class);
+public class RosBridgeClient {
+  private static final Logger logger = LoggerFactory.getLogger(RosBridgeClient.class);
   public static final  int    REPEAT = 100;
   public static final  int    COUNT  = 200;
 
@@ -50,14 +50,14 @@ public class RosClient {
   private final String hostname;
   private final int    port;
 
-  public RosClient(final RosClientOptions options, final String inProcessName) {
-    if (options.getHostname().contains(":")) {
-      String[] vals = options.getHostname().split(":");
+  private RosBridgeClient(final String hostname, final String inProcessName) {
+    if (hostname.contains(":")) {
+      String[] vals = hostname.split(":");
       this.hostname = vals[0];
       this.port = Integer.valueOf(vals[1]);
     }
     else {
-      this.hostname = options.getHostname();
+      this.hostname = hostname;
       this.port = 50051;
     }
 
@@ -72,10 +72,24 @@ public class RosClient {
     this.asyncStubRef.set(newStub(intercept(this.getChannel())));
   }
 
-  public static void main(final String[] argv) {
-    final RosClientOptions options = new RosClientOptions(argv);
+  public static RosBridgeClient newClient() {
+    final RosBridgeClientOptions options = new RosBridgeClientOptions(new String[] {});
     options.init();
-    final RosClient rosClient = new RosClient(options, null);
+    return new RosBridgeClient(options.getHostname(), "");
+  }
+
+  public static RosBridgeClient newClient(final RosBridgeClientOptions options) {
+    options.init();
+    return new RosBridgeClient(options.getHostname(), "");
+  }
+
+  public static RosBridgeClient newClient(final RosBridgeClientOptions options, final String inProcessName) {
+    options.init();
+    return new RosBridgeClient(options.getHostname(), inProcessName);
+  }
+
+  public static void main(final String[] argv) {
+    final RosBridgeClient client = RosBridgeClient.newClient(new RosBridgeClientOptions(argv));
 
     for (int i = 0; i < REPEAT; i++) {
       for (int j = 0; j < COUNT; j++) {
@@ -87,10 +101,10 @@ public class RosClient {
                                   .setAngularY(j + 4)
                                   .setAngularZ(j + 5)
                                   .build();
-        rosClient.writeTwistData(data);
+        client.writeTwistData(data);
       }
 
-      try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
+      try (final TwistDataStream stream = client.newTwistDataStream()) {
         for (int j = 0; j < COUNT; j++) {
           TwistData data = TwistData.newBuilder()
                                     .setLinearX(j)
@@ -106,7 +120,7 @@ public class RosClient {
 
       Utils.sleepForSecs(1);
 
-      final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
+      final Iterator<EncoderData> encoderDataIter = client.readEncoderData("wheel1");
       while (encoderDataIter.hasNext()) {
         EncoderData encoderData = encoderDataIter.next();
         logger.info("Read encoder value: " + encoderData.getValue());

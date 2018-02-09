@@ -37,8 +37,7 @@ public class Utils {
 
   private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
-  private Utils() {
-  }
+  private Utils() {}
 
   public static String getBanner(final String filename) {
     try (final InputStream in = logger.getClass().getClassLoader().getResourceAsStream(filename)) {
