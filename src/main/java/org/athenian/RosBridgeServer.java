@@ -69,8 +69,7 @@ public class RosBridgeServer
   }
 
   @Override
-  protected void startUp()
-      throws Exception {
+  protected void startUp() {
     super.startUp();
     this.grpcService.startAsync();
   }

@@ -48,9 +48,7 @@ public abstract class GenericService
   }
 
   @Override
-  protected void startUp()
-      throws Exception {
-    super.startUp();
+  protected void startUp() {
     Runtime.getRuntime().addShutdownHook(Utils.shutDownHookAction(this));
   }
 
