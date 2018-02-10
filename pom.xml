@@ -22,7 +22,7 @@
 
     <groupId>org.athenian</groupId>
     <artifactId>ros-grpc-bridge</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.8-SNAPSHOT</version>
 
 
     <properties>

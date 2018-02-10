@@ -25,7 +25,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import org.athenian.RosBridgeServer;
 import org.athenian.common.GenericServiceListener;
-import org.athenian.grpc.TwistData;
+import org.athenian.grpc.TwistValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class RosBridgeService
   private RosBridgeService(final RosBridgeServer rosBridgeServer,
                            final int port,
                            final String serverName,
-                           final Consumer<TwistData> onMessageAction) {
+                           final Consumer<TwistValue> onMessageAction) {
     this.port = port;
     this.serverName = serverName;
     this.inProcessServer = !isNullOrEmpty(serverName);
@@ -64,13 +64,13 @@ public class RosBridgeService
 
   public static RosBridgeService newService(final RosBridgeServer rosBridgeServer,
                                             final int grpcPort,
-                                            final Consumer<TwistData> onMessageAction) {
+                                            final Consumer<TwistValue> onMessageAction) {
     return new RosBridgeService(rosBridgeServer, grpcPort, null, onMessageAction);
   }
 
   public static RosBridgeService newService(final RosBridgeServer rosBridgeServer,
                                             final String serverName,
-                                            final Consumer<TwistData> onMessageAction) {
+                                            final Consumer<TwistValue> onMessageAction) {
     return new RosBridgeService(rosBridgeServer, -1, Preconditions.checkNotNull(serverName), onMessageAction);
   }
 

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import org.assertj.core.api.Assertions;
 import org.athenian.RosBridgeClient;
 import org.athenian.RosBridgeServer;
 import org.athenian.common.Utils;
-import org.athenian.core.TwistDataStream;
-import org.athenian.grpc.EncoderData;
-import org.athenian.grpc.TwistData;
+import org.athenian.core.TwistValueStream;
+import org.athenian.grpc.EncoderValue;
+import org.athenian.grpc.TwistValue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,10 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RosBridgeTest {
 
@@ -59,19 +61,19 @@ public class RosBridgeTest {
     long start = COUNTER.get();
     final int count = 1000;
     for (int i = 0; i < count; i++) {
-      TwistData data = TwistData.newBuilder()
-                                .setLinearX(i)
-                                .setLinearY(i + 1)
-                                .setLinearZ(i + 2)
-                                .setAngularX(i + 3)
-                                .setAngularY(i + 4)
-                                .setAngularZ(i + 5)
-                                .build();
-      client.writeTwistData(data);
+      TwistValue value = TwistValue.newBuilder()
+                                   .setLinearX(i)
+                                   .setLinearY(i + 1)
+                                   .setLinearZ(i + 2)
+                                   .setAngularX(i + 3)
+                                   .setAngularY(i + 4)
+                                   .setAngularZ(i + 5)
+                                   .build();
+      client.writeTwistValue(value);
     }
 
     Utils.sleepForSecs(3);
-    Assertions.assertThat(start + count == COUNTER.get());
+    assertThat(start + count == COUNTER.get()).isTrue();
   }
 
   @Test
@@ -80,38 +82,56 @@ public class RosBridgeTest {
     long start = COUNTER.get();
     final int count = 1000;
 
-    try (final TwistDataStream stream = client.newTwistDataStream()) {
+    try (final TwistValueStream stream = client.newTwistValueStream()) {
       for (int i = 0; i < count; i++) {
-        TwistData data = TwistData.newBuilder()
-                                  .setLinearX(i)
-                                  .setLinearY(i + 1)
-                                  .setLinearZ(i + 2)
-                                  .setAngularX(i + 3)
-                                  .setAngularY(i + 4)
-                                  .setAngularZ(i + 5)
-                                  .build();
-        stream.writeTwistData(data);
+        TwistValue value = TwistValue.newBuilder()
+                                     .setLinearX(i)
+                                     .setLinearY(i + 1)
+                                     .setLinearZ(i + 2)
+                                     .setAngularX(i + 3)
+                                     .setAngularY(i + 4)
+                                     .setAngularZ(i + 5)
+                                     .build();
+        stream.writeTwistValue(value);
       }
     }
 
     Utils.sleepForSecs(3);
-    Assertions.assertThat(start + count == COUNTER.get());
+    assertThat(start + count == COUNTER.get()).isTrue();
   }
 
   @Test
-  public void streamingEncoderTest() {
+  public void syncStreamingEncoderTest() {
     final RosBridgeClient client = RosBridgeClient.newClient();
 
-    final Iterator<EncoderData> encoderDataIter = client.readEncoderData("wheel1");
+    final Iterator<EncoderValue> iter = client.encoderValues("wheel1");
     int cnt = 0;
-    while (encoderDataIter.hasNext()) {
-      EncoderData encoderData = encoderDataIter.next();
-      logger.info("Read encoder value: " + encoderData.getValue());
-      Assertions.assertThat(cnt == (int) encoderData.getValue());
+    while (iter.hasNext()) {
+      final EncoderValue encoderValue = iter.next();
+      logger.info("Read encoder value: " + encoderValue.getValue());
+      assertThat(cnt == (int) encoderValue.getValue()).isTrue();
       cnt++;
     }
 
     Utils.sleepForSecs(3);
-    Assertions.assertThat(cnt == 20);
+    assertThat(cnt == RosBridgeClient.COUNT).isTrue();
+  }
+
+  @Test
+  public void asyncStreamingEncoderTest()
+      throws InterruptedException {
+    final RosBridgeClient client = RosBridgeClient.newClient();
+    AtomicInteger cnt = new AtomicInteger(0);
+    final CountDownLatch completedLatch =
+        client.encoderValues("wheel1",
+                             encoderValue -> {
+                               logger.info("Read encoder value: " + encoderValue.getValue());
+                               assertThat(cnt.get() == (int) encoderValue.getValue()).isTrue();
+                               cnt.incrementAndGet();
+                             });
+    completedLatch.await();
+
+    Utils.sleepForSecs(3);
+    assertThat(cnt.get() == RosBridgeClient.COUNT).isTrue();
   }
 }

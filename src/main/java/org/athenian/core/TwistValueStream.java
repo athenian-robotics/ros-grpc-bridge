@@ -20,21 +20,21 @@ import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import org.athenian.grpc.RosBridgeServiceGrpc;
-import org.athenian.grpc.TwistData;
+import org.athenian.grpc.TwistValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
-public class TwistDataStream
+public class TwistValueStream
     implements Closeable {
-  private static final Logger logger = LoggerFactory.getLogger(TwistDataStream.class);
+  private static final Logger logger = LoggerFactory.getLogger(TwistValueStream.class);
 
-  private final StreamObserver<TwistData> observer;
+  private final StreamObserver<TwistValue> observer;
 
-  public TwistDataStream(RosBridgeServiceGrpc.RosBridgeServiceStub asyncStub) {
+  public TwistValueStream(RosBridgeServiceGrpc.RosBridgeServiceStub asyncStub) {
     this.observer =
-        asyncStub.streamTwistData(
+        asyncStub.streamTwistValues(
             new StreamObserver<Empty>() {
               @Override
               public void onNext(Empty empty) {
@@ -55,9 +55,9 @@ public class TwistDataStream
             });
   }
 
-  public void writeTwistData(TwistData data) {
+  public void writeTwistValue(TwistValue value) {
     logger.info("Writing twist data to server");
-    this.observer.onNext(data);
+    this.observer.onNext(value);
   }
 
   // Signal to the server that we are done streaming data

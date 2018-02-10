@@ -21,7 +21,7 @@ import org.athenian.common.GenericService;
 import org.athenian.common.Utils;
 import org.athenian.core.RosBridgeServerOptions;
 import org.athenian.core.RosBridgeService;
-import org.athenian.grpc.TwistData;
+import org.athenian.grpc.TwistValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,24 +39,24 @@ public class RosBridgeServer
 
   private RosBridgeServer(final int port,
                           final String inProcessName,
-                          final Consumer<TwistData> onMessageAction) {
+                          final Consumer<TwistValue> onMessageAction) {
     this.port = port;
     this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.newService(this, port, onMessageAction)
                                                     : RosBridgeService.newService(this, inProcessName, onMessageAction);
     this.init();
   }
 
-  public static RosBridgeServer newServer(final Consumer<TwistData> onMessageAction) {
+  public static RosBridgeServer newServer(final Consumer<TwistValue> onMessageAction) {
     final RosBridgeServerOptions options = new RosBridgeServerOptions(new String[] {});
     return new RosBridgeServer(options.getPort(), null, onMessageAction);
   }
 
   public static RosBridgeServer newServer(final RosBridgeServerOptions options,
-                                          final Consumer<TwistData> onMessageAction) {
+                                          final Consumer<TwistValue> onMessageAction) {
     return new RosBridgeServer(options.getPort(), null, onMessageAction);
   }
 
-  public static RosBridgeServer newServer(final String inProcessName, final Consumer<TwistData> onMessageAction) {
+  public static RosBridgeServer newServer(final String inProcessName, final Consumer<TwistValue> onMessageAction) {
     return new RosBridgeServer(-1, inProcessName, onMessageAction);
   }
 
