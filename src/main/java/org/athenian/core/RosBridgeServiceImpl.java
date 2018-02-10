@@ -17,15 +17,15 @@
 package org.athenian.core;
 
 import com.google.protobuf.Empty;
+import com.google.protobuf.StringValue;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.athenian.RosBridgeClient;
 import org.athenian.RosBridgeServer;
-import org.athenian.grpc.EncoderData;
-import org.athenian.grpc.EncoderDesc;
+import org.athenian.grpc.EncoderValue;
 import org.athenian.grpc.RosBridgeServiceGrpc;
-import org.athenian.grpc.TwistData;
+import org.athenian.grpc.TwistValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,27 +36,27 @@ class RosBridgeServiceImpl
 
   private static final Logger logger = LoggerFactory.getLogger(RosBridgeServiceImpl.class);
 
-  private final RosBridgeServer     rosBridgeServer;
-  private final Consumer<TwistData> onMessageAction;
+  private final RosBridgeServer      rosBridgeServer;
+  private final Consumer<TwistValue> onMessageAction;
 
-  public RosBridgeServiceImpl(final RosBridgeServer rosBridgeServer, final Consumer<TwistData> onMessageAction) {
+  public RosBridgeServiceImpl(final RosBridgeServer rosBridgeServer, final Consumer<TwistValue> onMessageAction) {
     this.rosBridgeServer = rosBridgeServer;
     this.onMessageAction = onMessageAction;
   }
 
   @Override
-  public void writeTwistData(final TwistData data, final StreamObserver<Empty> observer) {
-    this.onMessageAction.accept(data);
+  public void writeTwistValue(final TwistValue value, final StreamObserver<Empty> observer) {
+    this.onMessageAction.accept(value);
     observer.onNext(Empty.getDefaultInstance());
     observer.onCompleted();
   }
 
   @Override
-  public StreamObserver<TwistData> streamTwistData(final StreamObserver<Empty> observer) {
-    return new StreamObserver<TwistData>() {
+  public StreamObserver<TwistValue> streamTwistValues(final StreamObserver<Empty> observer) {
+    return new StreamObserver<TwistValue>() {
       @Override
-      public void onNext(final TwistData data) {
-        onMessageAction.accept(data);
+      public void onNext(final TwistValue value) {
+        onMessageAction.accept(value);
       }
 
       @Override
@@ -83,10 +83,10 @@ class RosBridgeServiceImpl
   }
 
   @Override
-  public void readEncoderData(EncoderDesc request, StreamObserver<EncoderData> observer) {
-    logger.info("Returning encoder data for: " + request.getName());
+  public void readEncoderValues(StringValue request, StreamObserver<EncoderValue> observer) {
+    logger.info("Returning encoder data for: " + request.getValue());
     for (int i = 0; i < RosBridgeClient.COUNT; i++)
-      observer.onNext(EncoderData.newBuilder().setValue(i).build());
+      observer.onNext(EncoderValue.newBuilder().setValue(i).build());
     observer.onCompleted();
   }
 }

@@ -16,22 +16,26 @@
 
 package org.athenian;
 
+import com.google.protobuf.StringValue;
 import io.grpc.ManagedChannel;
+import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.stub.StreamObserver;
 import org.athenian.common.Utils;
 import org.athenian.core.RosBridgeClientOptions;
-import org.athenian.core.TwistDataStream;
-import org.athenian.grpc.EncoderData;
-import org.athenian.grpc.EncoderDesc;
+import org.athenian.core.TwistValueStream;
+import org.athenian.grpc.EncoderValue;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
-import org.athenian.grpc.TwistData;
+import org.athenian.grpc.TwistValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.grpc.ClientInterceptors.intercept;
@@ -90,64 +94,96 @@ public class RosBridgeClient {
     return new RosBridgeClient(options.getHostname(), inProcessName);
   }
 
-  public static void main(final String[] argv) {
+  public static void main(final String[] argv)
+      throws InterruptedException {
     final RosBridgeClient client = RosBridgeClient.newClient(new RosBridgeClientOptions(argv));
 
     for (int i = 0; i < REPEAT; i++) {
       for (int j = 0; j < COUNT; j++) {
-        TwistData data = TwistData.newBuilder()
-                                  .setLinearX(j)
-                                  .setLinearY(j + 1)
-                                  .setLinearZ(j + 2)
-                                  .setAngularX(j + 3)
-                                  .setAngularY(j + 4)
-                                  .setAngularZ(j + 5)
-                                  .build();
-        client.writeTwistData(data);
+        TwistValue value = TwistValue.newBuilder()
+                                     .setLinearX(j)
+                                     .setLinearY(j + 1)
+                                     .setLinearZ(j + 2)
+                                     .setAngularX(j + 3)
+                                     .setAngularY(j + 4)
+                                     .setAngularZ(j + 5)
+                                     .build();
+        client.writeTwistValue(value);
       }
 
-      try (final TwistDataStream stream = client.newTwistDataStream()) {
+      try (final TwistValueStream stream = client.newTwistValueStream()) {
         for (int j = 0; j < COUNT; j++) {
-          TwistData data = TwistData.newBuilder()
-                                    .setLinearX(j)
-                                    .setLinearY(j + 1)
-                                    .setLinearZ(j + 2)
-                                    .setAngularX(j + 3)
-                                    .setAngularY(j + 4)
-                                    .setAngularZ(j + 5)
-                                    .build();
-          stream.writeTwistData(data);
+          TwistValue value = TwistValue.newBuilder()
+                                       .setLinearX(j)
+                                       .setLinearY(j + 1)
+                                       .setLinearZ(j + 2)
+                                       .setAngularX(j + 3)
+                                       .setAngularY(j + 4)
+                                       .setAngularZ(j + 5)
+                                       .build();
+          stream.writeTwistValue(value);
         }
       }
-
       Utils.sleepForSecs(1);
 
-      final Iterator<EncoderData> encoderDataIter = client.readEncoderData("wheel1");
-      while (encoderDataIter.hasNext()) {
-        EncoderData encoderData = encoderDataIter.next();
-        logger.info("Read encoder value: " + encoderData.getValue());
+      final Iterator<EncoderValue> iter = client.encoderValues("wheel1");
+      while (iter.hasNext()) {
+        EncoderValue encoderValue = iter.next();
+        logger.info("Read encoder value: " + encoderValue.getValue());
       }
 
+      final CountDownLatch completedLatch =
+          client.encoderValues("wheel1",
+                               encoderValue -> logger.info("Read encoder value: " + encoderValue.getValue()));
+      completedLatch.await();
       Utils.sleepForSecs(1);
     }
   }
 
-  public void writeTwistData(final TwistData data) {
-    this.getBlockingStub().writeTwistData(data);
+  public void writeTwistValue(final TwistValue value) {
+    this.getBlockingStub().writeTwistValue(value);
   }
 
-  public Iterator<EncoderData> readEncoderData(final String encoderName) {
-    final EncoderDesc encoderDesc = EncoderDesc.newBuilder().setName(encoderName).build();
-    return this.getBlockingStub().readEncoderData(encoderDesc);
+  public Iterator<EncoderValue> encoderValues(final String encoderName) {
+    final StringValue encoderDesc = StringValue.newBuilder().setValue(encoderName).build();
+    return this.getBlockingStub().readEncoderValues(encoderDesc);
   }
 
-  public TwistDataStream newTwistDataStream() {
-    return new TwistDataStream(this.getAsyncStub());
+  public CountDownLatch encoderValues(final String encoderName,
+                                      final Consumer<EncoderValue> onMessageAction) {
+    final CountDownLatch completedLatch = new CountDownLatch(1);
+    final StringValue encoderDesc = StringValue.newBuilder().setValue(encoderName).build();
+    final StreamObserver<EncoderValue> observer = new StreamObserver<EncoderValue>() {
+      @Override
+      public void onNext(EncoderValue value) {
+        if (onMessageAction != null)
+          onMessageAction.accept(value);
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        final Status status = Status.fromThrowable(t);
+        if (status != Status.CANCELLED)
+          logger.info("Error in asyncEncoderValues(): {}", status);
+        this.onCompleted();
+      }
+
+      @Override
+      public void onCompleted() {
+        completedLatch.countDown();
+      }
+    };
+    this.getNonBlockingStub().readEncoderValues(encoderDesc, observer);
+    return completedLatch;
+  }
+
+  public TwistValueStream newTwistValueStream() {
+    return new TwistValueStream(this.getNonBlockingStub());
   }
 
   private ManagedChannel getChannel() { return this.channelRef.get(); }
 
   private RosBridgeServiceBlockingStub getBlockingStub() { return this.blockingStubRef.get(); }
 
-  private RosBridgeServiceStub getAsyncStub() { return this.asyncStubRef.get(); }
+  private RosBridgeServiceStub getNonBlockingStub() { return this.asyncStubRef.get(); }
 }

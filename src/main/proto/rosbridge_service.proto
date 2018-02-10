@@ -2,11 +2,12 @@ syntax = "proto3";
 package rosbridge_service;
 
 import public "google/protobuf/empty.proto";
+import public "google/protobuf/wrappers.proto";
 
 option java_multiple_files = true;
 option java_package = "org.athenian.grpc";
 
-message TwistData {
+message TwistValue {
     double linear_x = 1;
     double linear_y = 2;
     double linear_z = 3;
@@ -15,21 +16,14 @@ message TwistData {
     double angular_z = 6;
 }
 
-message EncoderDesc {
-    string name = 1;
-}
-
-message EncoderData {
+message EncoderValue {
     double value = 1;
 }
 
 service RosBridgeService {
-    rpc writeTwistData (TwistData) returns (google.protobuf.Empty) {
-    }
+    rpc writeTwistValue (TwistValue) returns (google.protobuf.Empty);
 
-    rpc streamTwistData (stream TwistData) returns (google.protobuf.Empty) {
-    }
+    rpc streamTwistValues (stream TwistValue) returns (google.protobuf.Empty);
 
-    rpc readEncoderData (EncoderDesc) returns (stream EncoderData) {
-    }
+    rpc readEncoderValues (google.protobuf.StringValue) returns (stream EncoderValue);
 }

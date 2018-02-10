@@ -15,64 +15,67 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 from google.protobuf.empty_pb2 import *
+from google.protobuf.wrappers_pb2 import *
 
 DESCRIPTOR = _descriptor.FileDescriptor(
     name='rosbridge_service.proto',
     package='rosbridge_service',
     syntax='proto3',
     serialized_pb=_b(
-        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\"z\n\tTwistData\x12\x10\n\x08linear_x\x18\x01 \x01(\x01\x12\x10\n\x08linear_y\x18\x02 \x01(\x01\x12\x10\n\x08linear_z\x18\x03 \x01(\x01\x12\x11\n\tangular_x\x18\x04 \x01(\x01\x12\x11\n\tangular_y\x18\x05 \x01(\x01\x12\x11\n\tangular_z\x18\x06 \x01(\x01\"\x1b\n\x0b\x45ncoderDesc\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1c\n\x0b\x45ncoderData\x12\r\n\x05value\x18\x01 \x01(\x01\x32\x80\x02\n\x10RosBridgeService\x12H\n\x0ewriteTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00\x12K\n\x0fstreamTwistData\x12\x1c.rosbridge_service.TwistData\x1a\x16.google.protobuf.Empty\"\x00(\x01\x12U\n\x0freadEncoderData\x12\x1e.rosbridge_service.EncoderDesc\x1a\x1e.rosbridge_service.EncoderData\"\x00\x30\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00\x62\x06proto3')
+        '\n\x17rosbridge_service.proto\x12\x11rosbridge_service\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1egoogle/protobuf/wrappers.proto\"{\n\nTwistValue\x12\x10\n\x08linear_x\x18\x01 \x01(\x01\x12\x10\n\x08linear_y\x18\x02 \x01(\x01\x12\x10\n\x08linear_z\x18\x03 \x01(\x01\x12\x11\n\tangular_x\x18\x04 \x01(\x01\x12\x11\n\tangular_y\x18\x05 \x01(\x01\x12\x11\n\tangular_z\x18\x06 \x01(\x01\"\x1d\n\x0c\x45ncoderValue\x12\r\n\x05value\x18\x01 \x01(\x01\x32\x80\x02\n\x10RosBridgeService\x12H\n\x0fwriteTwistValue\x12\x1d.rosbridge_service.TwistValue\x1a\x16.google.protobuf.Empty\x12L\n\x11streamTwistValues\x12\x1d.rosbridge_service.TwistValue\x1a\x16.google.protobuf.Empty(\x01\x12T\n\x11readEncoderValues\x12\x1c.google.protobuf.StringValue\x1a\x1f.rosbridge_service.EncoderValue0\x01\x42\x15\n\x11org.athenian.grpcP\x01P\x00P\x01\x62\x06proto3')
     ,
-    dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ],
-    public_dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, ])
+    dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR, google_dot_protobuf_dot_wrappers__pb2.DESCRIPTOR, ],
+    public_dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,
+                         google_dot_protobuf_dot_wrappers__pb2.DESCRIPTOR, ])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-_TWISTDATA = _descriptor.Descriptor(
-    name='TwistData',
-    full_name='rosbridge_service.TwistData',
+_TWISTVALUE = _descriptor.Descriptor(
+    name='TwistValue',
+    full_name='rosbridge_service.TwistValue',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     fields=[
         _descriptor.FieldDescriptor(
-            name='linear_x', full_name='rosbridge_service.TwistData.linear_x', index=0,
+            name='linear_x', full_name='rosbridge_service.TwistValue.linear_x', index=0,
             number=1, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
-            name='linear_y', full_name='rosbridge_service.TwistData.linear_y', index=1,
+            name='linear_y', full_name='rosbridge_service.TwistValue.linear_y', index=1,
             number=2, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
-            name='linear_z', full_name='rosbridge_service.TwistData.linear_z', index=2,
+            name='linear_z', full_name='rosbridge_service.TwistValue.linear_z', index=2,
             number=3, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
-            name='angular_x', full_name='rosbridge_service.TwistData.angular_x', index=3,
+            name='angular_x', full_name='rosbridge_service.TwistValue.angular_x', index=3,
             number=4, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
-            name='angular_y', full_name='rosbridge_service.TwistData.angular_y', index=4,
+            name='angular_y', full_name='rosbridge_service.TwistValue.angular_y', index=4,
             number=5, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
             is_extension=False, extension_scope=None,
             options=None),
         _descriptor.FieldDescriptor(
-            name='angular_z', full_name='rosbridge_service.TwistData.angular_z', index=5,
+            name='angular_z', full_name='rosbridge_service.TwistValue.angular_z', index=5,
             number=6, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
@@ -90,49 +93,19 @@ _TWISTDATA = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=75,
-    serialized_end=197,
+    serialized_start=107,
+    serialized_end=230,
 )
 
-_ENCODERDESC = _descriptor.Descriptor(
-    name='EncoderDesc',
-    full_name='rosbridge_service.EncoderDesc',
+_ENCODERVALUE = _descriptor.Descriptor(
+    name='EncoderValue',
+    full_name='rosbridge_service.EncoderValue',
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
     fields=[
         _descriptor.FieldDescriptor(
-            name='name', full_name='rosbridge_service.EncoderDesc.name', index=0,
-            number=1, type=9, cpp_type=9, label=1,
-            has_default_value=False, default_value=_b("").decode('utf-8'),
-            message_type=None, enum_type=None, containing_type=None,
-            is_extension=False, extension_scope=None,
-            options=None),
-    ],
-    extensions=[
-    ],
-    nested_types=[],
-    enum_types=[
-    ],
-    options=None,
-    is_extendable=False,
-    syntax='proto3',
-    extension_ranges=[],
-    oneofs=[
-    ],
-    serialized_start=199,
-    serialized_end=226,
-)
-
-_ENCODERDATA = _descriptor.Descriptor(
-    name='EncoderData',
-    full_name='rosbridge_service.EncoderData',
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    fields=[
-        _descriptor.FieldDescriptor(
-            name='value', full_name='rosbridge_service.EncoderData.value', index=0,
+            name='value', full_name='rosbridge_service.EncoderValue.value', index=0,
             number=1, type=1, cpp_type=5, label=1,
             has_default_value=False, default_value=float(0),
             message_type=None, enum_type=None, containing_type=None,
@@ -150,34 +123,26 @@ _ENCODERDATA = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[
     ],
-    serialized_start=228,
-    serialized_end=256,
+    serialized_start=232,
+    serialized_end=261,
 )
 
-DESCRIPTOR.message_types_by_name['TwistData'] = _TWISTDATA
-DESCRIPTOR.message_types_by_name['EncoderDesc'] = _ENCODERDESC
-DESCRIPTOR.message_types_by_name['EncoderData'] = _ENCODERDATA
+DESCRIPTOR.message_types_by_name['TwistValue'] = _TWISTVALUE
+DESCRIPTOR.message_types_by_name['EncoderValue'] = _ENCODERVALUE
 
-TwistData = _reflection.GeneratedProtocolMessageType('TwistData', (_message.Message,), dict(
-    DESCRIPTOR=_TWISTDATA,
+TwistValue = _reflection.GeneratedProtocolMessageType('TwistValue', (_message.Message,), dict(
+    DESCRIPTOR=_TWISTVALUE,
     __module__='rosbridge_service_pb2'
-    # @@protoc_insertion_point(class_scope:rosbridge_service.TwistData)
+    # @@protoc_insertion_point(class_scope:rosbridge_service.TwistValue)
 ))
-_sym_db.RegisterMessage(TwistData)
+_sym_db.RegisterMessage(TwistValue)
 
-EncoderDesc = _reflection.GeneratedProtocolMessageType('EncoderDesc', (_message.Message,), dict(
-    DESCRIPTOR=_ENCODERDESC,
+EncoderValue = _reflection.GeneratedProtocolMessageType('EncoderValue', (_message.Message,), dict(
+    DESCRIPTOR=_ENCODERVALUE,
     __module__='rosbridge_service_pb2'
-    # @@protoc_insertion_point(class_scope:rosbridge_service.EncoderDesc)
+    # @@protoc_insertion_point(class_scope:rosbridge_service.EncoderValue)
 ))
-_sym_db.RegisterMessage(EncoderDesc)
-
-EncoderData = _reflection.GeneratedProtocolMessageType('EncoderData', (_message.Message,), dict(
-    DESCRIPTOR=_ENCODERDATA,
-    __module__='rosbridge_service_pb2'
-    # @@protoc_insertion_point(class_scope:rosbridge_service.EncoderData)
-))
-_sym_db.RegisterMessage(EncoderData)
+_sym_db.RegisterMessage(EncoderValue)
 
 
 DESCRIPTOR.has_options = True
@@ -200,36 +165,36 @@ try:
             Args:
               channel: A grpc.Channel.
             """
-            self.writeTwistData = channel.unary_unary(
-                '/rosbridge_service.RosBridgeService/writeTwistData',
-                request_serializer=TwistData.SerializeToString,
+            self.writeTwistValue = channel.unary_unary(
+                '/rosbridge_service.RosBridgeService/writeTwistValue',
+                request_serializer=TwistValue.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             )
-            self.streamTwistData = channel.stream_unary(
-                '/rosbridge_service.RosBridgeService/streamTwistData',
-                request_serializer=TwistData.SerializeToString,
+            self.streamTwistValues = channel.stream_unary(
+                '/rosbridge_service.RosBridgeService/streamTwistValues',
+                request_serializer=TwistValue.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             )
-            self.readEncoderData = channel.unary_stream(
-                '/rosbridge_service.RosBridgeService/readEncoderData',
-                request_serializer=EncoderDesc.SerializeToString,
-                response_deserializer=EncoderData.FromString,
+            self.readEncoderValues = channel.unary_stream(
+                '/rosbridge_service.RosBridgeService/readEncoderValues',
+                request_serializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
+                response_deserializer=EncoderValue.FromString,
             )
 
 
     class RosBridgeServiceServicer(object):
 
-        def writeTwistData(self, request, context):
+        def writeTwistValue(self, request, context):
             context.set_code(grpc.StatusCode.UNIMPLEMENTED)
             context.set_details('Method not implemented!')
             raise NotImplementedError('Method not implemented!')
 
-        def streamTwistData(self, request_iterator, context):
+        def streamTwistValues(self, request_iterator, context):
             context.set_code(grpc.StatusCode.UNIMPLEMENTED)
             context.set_details('Method not implemented!')
             raise NotImplementedError('Method not implemented!')
 
-        def readEncoderData(self, request, context):
+        def readEncoderValues(self, request, context):
             context.set_code(grpc.StatusCode.UNIMPLEMENTED)
             context.set_details('Method not implemented!')
             raise NotImplementedError('Method not implemented!')
@@ -237,20 +202,20 @@ try:
 
     def add_RosBridgeServiceServicer_to_server(servicer, server):
         rpc_method_handlers = {
-            'writeTwistData': grpc.unary_unary_rpc_method_handler(
-                servicer.writeTwistData,
-                request_deserializer=TwistData.FromString,
+            'writeTwistValue': grpc.unary_unary_rpc_method_handler(
+                servicer.writeTwistValue,
+                request_deserializer=TwistValue.FromString,
                 response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
-            'streamTwistData': grpc.stream_unary_rpc_method_handler(
-                servicer.streamTwistData,
-                request_deserializer=TwistData.FromString,
+            'streamTwistValues': grpc.stream_unary_rpc_method_handler(
+                servicer.streamTwistValues,
+                request_deserializer=TwistValue.FromString,
                 response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
-            'readEncoderData': grpc.unary_stream_rpc_method_handler(
-                servicer.readEncoderData,
-                request_deserializer=EncoderDesc.FromString,
-                response_serializer=EncoderData.SerializeToString,
+            'readEncoderValues': grpc.unary_stream_rpc_method_handler(
+                servicer.readEncoderValues,
+                request_deserializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
+                response_serializer=EncoderValue.SerializeToString,
             ),
         }
         generic_handler = grpc.method_handlers_generic_handler(
@@ -265,13 +230,13 @@ try:
         file not marked beta) for all further purposes. This class was generated
         only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
 
-        def writeTwistData(self, request, context):
+        def writeTwistValue(self, request, context):
             context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
-        def streamTwistData(self, request_iterator, context):
+        def streamTwistValues(self, request_iterator, context):
             context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
-        def readEncoderData(self, request, context):
+        def readEncoderValues(self, request, context):
             context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
 
@@ -282,17 +247,17 @@ try:
         file not marked beta) for all further purposes. This class was generated
         only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
 
-        def writeTwistData(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+        def writeTwistValue(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
             raise NotImplementedError()
 
-        writeTwistData.future = None
+        writeTwistValue.future = None
 
-        def streamTwistData(self, request_iterator, timeout, metadata=None, with_call=False, protocol_options=None):
+        def streamTwistValues(self, request_iterator, timeout, metadata=None, with_call=False, protocol_options=None):
             raise NotImplementedError()
 
-        streamTwistData.future = None
+        streamTwistValues.future = None
 
-        def readEncoderData(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+        def readEncoderValues(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
             raise NotImplementedError()
 
 
@@ -304,24 +269,25 @@ try:
         file not marked beta) for all further purposes. This function was
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_deserializers = {
-            ('rosbridge_service.RosBridgeService', 'readEncoderData'): EncoderDesc.FromString,
-            ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.FromString,
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.FromString,
+            ('rosbridge_service.RosBridgeService',
+             'readEncoderValues'): google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
+            ('rosbridge_service.RosBridgeService', 'streamTwistValues'): TwistValue.FromString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistValue'): TwistValue.FromString,
         }
         response_serializers = {
-            ('rosbridge_service.RosBridgeService', 'readEncoderData'): EncoderData.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'readEncoderValues'): EncoderValue.SerializeToString,
             ('rosbridge_service.RosBridgeService',
-             'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+             'streamTwistValues'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ('rosbridge_service.RosBridgeService',
-             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+             'writeTwistValue'): google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
         }
         method_implementations = {
-            ('rosbridge_service.RosBridgeService', 'readEncoderData'): face_utilities.unary_stream_inline(
-                servicer.readEncoderData),
-            ('rosbridge_service.RosBridgeService', 'streamTwistData'): face_utilities.stream_unary_inline(
-                servicer.streamTwistData),
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): face_utilities.unary_unary_inline(
-                servicer.writeTwistData),
+            ('rosbridge_service.RosBridgeService', 'readEncoderValues'): face_utilities.unary_stream_inline(
+                servicer.readEncoderValues),
+            ('rosbridge_service.RosBridgeService', 'streamTwistValues'): face_utilities.stream_unary_inline(
+                servicer.streamTwistValues),
+            ('rosbridge_service.RosBridgeService', 'writeTwistValue'): face_utilities.unary_unary_inline(
+                servicer.writeTwistValue),
         }
         server_options = beta_implementations.server_options(request_deserializers=request_deserializers,
                                                              response_serializers=response_serializers,
@@ -338,21 +304,22 @@ try:
         file not marked beta) for all further purposes. This function was
         generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
         request_serializers = {
-            ('rosbridge_service.RosBridgeService', 'readEncoderData'): EncoderDesc.SerializeToString,
-            ('rosbridge_service.RosBridgeService', 'streamTwistData'): TwistData.SerializeToString,
-            ('rosbridge_service.RosBridgeService', 'writeTwistData'): TwistData.SerializeToString,
+            ('rosbridge_service.RosBridgeService',
+             'readEncoderValues'): google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'streamTwistValues'): TwistValue.SerializeToString,
+            ('rosbridge_service.RosBridgeService', 'writeTwistValue'): TwistValue.SerializeToString,
         }
         response_deserializers = {
-            ('rosbridge_service.RosBridgeService', 'readEncoderData'): EncoderData.FromString,
+            ('rosbridge_service.RosBridgeService', 'readEncoderValues'): EncoderValue.FromString,
             ('rosbridge_service.RosBridgeService',
-             'streamTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+             'streamTwistValues'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             ('rosbridge_service.RosBridgeService',
-             'writeTwistData'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+             'writeTwistValue'): google_dot_protobuf_dot_empty__pb2.Empty.FromString,
         }
         cardinalities = {
-            'readEncoderData': cardinality.Cardinality.UNARY_STREAM,
-            'streamTwistData': cardinality.Cardinality.STREAM_UNARY,
-            'writeTwistData': cardinality.Cardinality.UNARY_UNARY,
+            'readEncoderValues': cardinality.Cardinality.UNARY_STREAM,
+            'streamTwistValues': cardinality.Cardinality.STREAM_UNARY,
+            'writeTwistValue': cardinality.Cardinality.UNARY_UNARY,
         }
         stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer,
                                                          request_serializers=request_serializers,
