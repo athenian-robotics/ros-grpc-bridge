@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.List;
 
 public abstract class GenericService
@@ -34,11 +33,12 @@ public abstract class GenericService
 
   private static final Logger logger = LoggerFactory.getLogger(GenericService.class);
 
-  private final List<Service> services = Lists.newArrayList(this);
+  private final List<Service> services = Lists.newArrayList();
 
   private ServiceManager serviceManager = null;
 
   protected GenericService() {
+    this.addService(this);
     this.addListener(new GenericServiceListener(this), MoreExecutors.directExecutor());
   }
 
@@ -48,15 +48,12 @@ public abstract class GenericService
   }
 
   @Override
-  protected void startUp()
-      throws Exception {
-    super.startUp();
+  protected void startUp() {
     Runtime.getRuntime().addShutdownHook(Utils.shutDownHookAction(this));
   }
 
   @Override
-  public void close()
-      throws IOException {
+  public void close() {
     this.stopAsync();
   }
 
@@ -68,15 +65,16 @@ public abstract class GenericService
 
   protected ServiceManager.Listener newListener() {
     final String serviceName = this.getClass().getSimpleName();
-    return new ServiceManager.Listener() {
-      @Override
-      public void healthy() { logger.info("All {} services healthy", serviceName); }
+    return
+        new ServiceManager.Listener() {
+          @Override
+          public void healthy() { logger.info("All {} services healthy", serviceName); }
 
-      @Override
-      public void stopped() { logger.info("All {} services stopped", serviceName); }
+          @Override
+          public void stopped() { logger.info("All {} services stopped", serviceName); }
 
-      @Override
-      public void failure(final Service service) { logger.info("{} service failed: {}", serviceName, service); }
-    };
+          @Override
+          public void failure(final Service service) { logger.info("{} service failed: {}", serviceName, service); }
+        };
   }
 }

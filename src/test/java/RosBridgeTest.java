@@ -15,11 +15,9 @@
  */
 
 import org.assertj.core.api.Assertions;
-import org.athenian.RosBridge;
-import org.athenian.RosClient;
+import org.athenian.RosBridgeClient;
+import org.athenian.RosBridgeServer;
 import org.athenian.common.Utils;
-import org.athenian.core.RosBridgeOptions;
-import org.athenian.core.RosClientOptions;
 import org.athenian.core.TwistDataStream;
 import org.athenian.grpc.EncoderData;
 import org.athenian.grpc.TwistData;
@@ -34,20 +32,17 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.athenian.RosBridge.newRosBridge;
 
-public class BridgeTest {
+public class RosBridgeTest {
 
-  private static final Logger     logger     = LoggerFactory.getLogger(BridgeTest.class);
-  private static final AtomicLong COUNTER    = new AtomicLong();
-  private static final String[]   EMPTY_ARGV = {};
+  private static final Logger     logger  = LoggerFactory.getLogger(RosBridgeTest.class);
+  private static final AtomicLong COUNTER = new AtomicLong();
 
-  private static RosBridge ROSBRIDGE = null;
+  private static RosBridgeServer ROSBRIDGE = null;
 
   @BeforeClass
   public static void setUp() {
-    final RosBridgeOptions options = new RosBridgeOptions(EMPTY_ARGV);
-    ROSBRIDGE = newRosBridge(options.getPort(), data -> COUNTER.incrementAndGet());
+    ROSBRIDGE = RosBridgeServer.newServer(data -> COUNTER.incrementAndGet());
     ROSBRIDGE.startAsync();
   }
 
@@ -60,8 +55,7 @@ public class BridgeTest {
 
   @Test
   public void blockingTwistTest() {
-    final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
-    final RosClient rosClient = new RosClient(options, null);
+    final RosBridgeClient client = RosBridgeClient.newClient();
     long start = COUNTER.get();
     final int count = 1000;
     for (int i = 0; i < count; i++) {
@@ -73,7 +67,7 @@ public class BridgeTest {
                                 .setAngularY(i + 4)
                                 .setAngularZ(i + 5)
                                 .build();
-      rosClient.writeTwistData(data);
+      client.writeTwistData(data);
     }
 
     Utils.sleepForSecs(3);
@@ -82,12 +76,11 @@ public class BridgeTest {
 
   @Test
   public void streamingTwistTest() {
-    final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
-    final RosClient rosClient = new RosClient(options, null);
+    final RosBridgeClient client = RosBridgeClient.newClient();
     long start = COUNTER.get();
     final int count = 1000;
 
-    try (final TwistDataStream stream = rosClient.newTwistDataStream()) {
+    try (final TwistDataStream stream = client.newTwistDataStream()) {
       for (int i = 0; i < count; i++) {
         TwistData data = TwistData.newBuilder()
                                   .setLinearX(i)
@@ -107,10 +100,9 @@ public class BridgeTest {
 
   @Test
   public void streamingEncoderTest() {
-    final RosClientOptions options = new RosClientOptions(EMPTY_ARGV);
-    final RosClient rosClient = new RosClient(options, null);
+    final RosBridgeClient client = RosBridgeClient.newClient();
 
-    final Iterator<EncoderData> encoderDataIter = rosClient.readEncoderData("wheel1");
+    final Iterator<EncoderData> encoderDataIter = client.readEncoderData("wheel1");
     int cnt = 0;
     while (encoderDataIter.hasNext()) {
       EncoderData encoderData = encoderDataIter.next();

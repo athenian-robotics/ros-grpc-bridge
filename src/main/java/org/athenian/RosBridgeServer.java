@@ -19,7 +19,7 @@ package org.athenian;
 import com.google.common.base.MoreObjects;
 import org.athenian.common.GenericService;
 import org.athenian.common.Utils;
-import org.athenian.core.RosBridgeOptions;
+import org.athenian.core.RosBridgeServerOptions;
 import org.athenian.core.RosBridgeService;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
@@ -29,44 +29,47 @@ import java.util.function.Consumer;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class RosBridge
+public class RosBridgeServer
     extends GenericService {
 
-  private static final Logger logger = LoggerFactory.getLogger(RosBridge.class);
+  private static final Logger logger = LoggerFactory.getLogger(RosBridgeServer.class);
 
   private final int              port;
   private final RosBridgeService grpcService;
 
-  private RosBridge(final int port,
-                    final String inProcessName,
-                    final Consumer<TwistData> onMessageAction) {
+  private RosBridgeServer(final int port,
+                          final String inProcessName,
+                          final Consumer<TwistData> onMessageAction) {
     this.port = port;
-    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.create(this, port, onMessageAction)
-                                                    : RosBridgeService.create(this, inProcessName, onMessageAction);
+    this.grpcService = isNullOrEmpty(inProcessName) ? RosBridgeService.newService(this, port, onMessageAction)
+                                                    : RosBridgeService.newService(this, inProcessName, onMessageAction);
     this.init();
   }
 
-  public static RosBridge newRosBridge(final int port, final Consumer<TwistData> onMessageAction) {
-    return new RosBridge(port, null, onMessageAction);
+  public static RosBridgeServer newServer(final Consumer<TwistData> onMessageAction) {
+    final RosBridgeServerOptions options = new RosBridgeServerOptions(new String[] {});
+    return new RosBridgeServer(options.getPort(), null, onMessageAction);
   }
 
-  public static RosBridge newRosBridge(final String inProcessName, final Consumer<TwistData> onMessageAction) {
-    return new RosBridge(-1, inProcessName, onMessageAction);
+  public static RosBridgeServer newServer(final RosBridgeServerOptions options,
+                                          final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeServer(options.getPort(), null, onMessageAction);
+  }
+
+  public static RosBridgeServer newServer(final String inProcessName, final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeServer(-1, inProcessName, onMessageAction);
   }
 
   public static void main(final String[] argv) {
     logger.info(Utils.getBanner("banners/bridge.txt"));
-    final RosBridgeOptions options = new RosBridgeOptions(argv);
-    final RosBridge rosBridge = newRosBridge(options.getPort(),
-                                             data -> logger.info("Got data {}", data));
-    rosBridge.startAsync();
+    final RosBridgeServer rosBridgeServer = newServer(data -> logger.info("Got data {}", data));
+    rosBridgeServer.startAsync();
 
     Utils.sleepForSecs(Integer.MAX_VALUE);
   }
 
   @Override
-  protected void startUp()
-      throws Exception {
+  protected void startUp() {
     super.startUp();
     this.grpcService.startAsync();
   }

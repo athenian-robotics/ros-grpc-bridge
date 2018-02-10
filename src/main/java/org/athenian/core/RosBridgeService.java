@@ -23,7 +23,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
-import org.athenian.RosBridge;
+import org.athenian.RosBridgeServer;
 import org.athenian.common.GenericServiceListener;
 import org.athenian.grpc.TwistData;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class RosBridgeService
   private final boolean inProcessServer;
   private final Server  grpcServer;
 
-  private RosBridgeService(final RosBridge rosBridge,
+  private RosBridgeService(final RosBridgeServer rosBridgeServer,
                            final int port,
                            final String serverName,
                            final Consumer<TwistData> onMessageAction) {
@@ -52,7 +52,7 @@ public class RosBridgeService
     this.serverName = serverName;
     this.inProcessServer = !isNullOrEmpty(serverName);
 
-    final RosBridgeServiceImpl rosBridgeService = new RosBridgeServiceImpl(rosBridge, onMessageAction);
+    final RosBridgeServiceImpl rosBridgeService = new RosBridgeServiceImpl(rosBridgeServer, onMessageAction);
     this.grpcServer = this.inProcessServer ? InProcessServerBuilder.forName(this.serverName)
                                                                    .addService(rosBridgeService)
                                                                    .build()
@@ -62,16 +62,16 @@ public class RosBridgeService
     this.addListener(new GenericServiceListener(this), MoreExecutors.directExecutor());
   }
 
-  public static RosBridgeService create(final RosBridge rosBridge,
-                                        final int grpcPort,
-                                        final Consumer<TwistData> onMessageAction) {
-    return new RosBridgeService(rosBridge, grpcPort, null, onMessageAction);
+  public static RosBridgeService newService(final RosBridgeServer rosBridgeServer,
+                                            final int grpcPort,
+                                            final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeService(rosBridgeServer, grpcPort, null, onMessageAction);
   }
 
-  public static RosBridgeService create(final RosBridge rosBridge,
-                                        final String serverName,
-                                        final Consumer<TwistData> onMessageAction) {
-    return new RosBridgeService(rosBridge, -1, Preconditions.checkNotNull(serverName), onMessageAction);
+  public static RosBridgeService newService(final RosBridgeServer rosBridgeServer,
+                                            final String serverName,
+                                            final Consumer<TwistData> onMessageAction) {
+    return new RosBridgeService(rosBridgeServer, -1, Preconditions.checkNotNull(serverName), onMessageAction);
   }
 
   @Override
