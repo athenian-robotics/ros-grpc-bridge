@@ -29,7 +29,7 @@
         <jcommander.version>1.72</jcommander.version>
         <guava.version>19.0</guava.version>
 
-        <grpc.version>1.9.0</grpc.version>
+        <grpc.version>1.9.1</grpc.version>
         <grpc.plugin.version>1.9.0</grpc.plugin.version>
         <protobuf.version>3.5.1</protobuf.version>
         <protobuf.plugin.version>0.5.1</protobuf.plugin.version>
