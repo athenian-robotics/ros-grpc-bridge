@@ -29,6 +29,11 @@ class RosBridgeServiceStub(object):
             request_serializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.SerializeToString,
             response_deserializer=rosbridge__service__pb2.EncoderValue.FromString,
         )
+        self.readCommandValues = channel.unary_stream(
+            '/rosbridge_service.RosBridgeService/readCommandValues',
+            request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            response_deserializer=rosbridge__service__pb2.CommandValue.FromString,
+        )
 
 
 class RosBridgeServiceServicer(object):
@@ -44,6 +49,11 @@ class RosBridgeServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def readEncoderValues(self, request, context):
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def readCommandValues(self, request, context):
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -65,6 +75,11 @@ def add_RosBridgeServiceServicer_to_server(servicer, server):
             servicer.readEncoderValues,
             request_deserializer=google_dot_protobuf_dot_wrappers__pb2.StringValue.FromString,
             response_serializer=rosbridge__service__pb2.EncoderValue.SerializeToString,
+        ),
+        'readCommandValues': grpc.unary_stream_rpc_method_handler(
+            servicer.readCommandValues,
+            request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            response_serializer=rosbridge__service__pb2.CommandValue.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(

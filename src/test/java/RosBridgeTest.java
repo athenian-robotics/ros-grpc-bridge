@@ -18,6 +18,7 @@ import org.athenian.RosBridgeClient;
 import org.athenian.RosBridgeServer;
 import org.athenian.common.Utils;
 import org.athenian.core.TwistValueStream;
+import org.athenian.grpc.CommandValue;
 import org.athenian.grpc.EncoderValue;
 import org.athenian.grpc.TwistValue;
 import org.junit.AfterClass;
@@ -129,6 +130,41 @@ public class RosBridgeTest {
                                assertThat(cnt.get() == (int) encoderValue.getValue()).isTrue();
                                cnt.incrementAndGet();
                              });
+    completedLatch.await();
+
+    Utils.sleepForSecs(3);
+    assertThat(cnt.get() == RosBridgeClient.COUNT).isTrue();
+  }
+
+  @Test
+  public void syncStreamingCommandsTest() {
+    final RosBridgeClient client = RosBridgeClient.newClient();
+
+    final Iterator<CommandValue> iter = client.commandValues();
+    int cnt = 0;
+    while (iter.hasNext()) {
+      final CommandValue commandValue = iter.next();
+      logger.info("Read command: " + commandValue.getCommand());
+      logger.info("Read command arg: " + commandValue.getCommandArg());
+      cnt++;
+    }
+
+    Utils.sleepForSecs(3);
+    assertThat(cnt == RosBridgeClient.COUNT).isTrue();
+  }
+
+  @Test
+  public void asyncStreamingCommandsTest()
+      throws InterruptedException {
+    final RosBridgeClient client = RosBridgeClient.newClient();
+    AtomicInteger cnt = new AtomicInteger(0);
+    final CountDownLatch completedLatch =
+        client.commandValues(
+            commandValue -> {
+              logger.info("Read command: " + commandValue.getCommand());
+              logger.info("Read command arg: " + commandValue.getCommandArg());
+              cnt.incrementAndGet();
+            });
     completedLatch.await();
 
     Utils.sleepForSecs(3);

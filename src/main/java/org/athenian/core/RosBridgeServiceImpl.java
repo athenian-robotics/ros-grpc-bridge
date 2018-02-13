@@ -23,6 +23,7 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.athenian.RosBridgeClient;
 import org.athenian.RosBridgeServer;
+import org.athenian.grpc.CommandValue;
 import org.athenian.grpc.EncoderValue;
 import org.athenian.grpc.RosBridgeServiceGrpc;
 import org.athenian.grpc.TwistValue;
@@ -87,6 +88,17 @@ class RosBridgeServiceImpl
     logger.info("Returning encoder data for: " + request.getValue());
     for (int i = 0; i < RosBridgeClient.COUNT; i++)
       observer.onNext(EncoderValue.newBuilder().setValue(i).build());
+    observer.onCompleted();
+  }
+
+  @Override
+  public void readCommandValues(Empty request, StreamObserver<CommandValue> observer) {
+    logger.info("Returning command");
+    for (int i = 0; i < RosBridgeClient.COUNT; i++)
+      observer.onNext(CommandValue.newBuilder()
+                                  .setCommand(String.format("Command %d", i))
+                                  .setCommandArg(String.format("Command Arg %d", i))
+                                  .build());
     observer.onCompleted();
   }
 }

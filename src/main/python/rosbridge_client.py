@@ -1,5 +1,6 @@
 import grpc
 import logging
+from google.protobuf.empty_pb2 import *
 from google.protobuf.wrappers_pb2 import *
 
 from stubs.rosbridge_service_pb2 import RosBridgeServiceStub
@@ -35,9 +36,16 @@ class RosBridgeClient(object):
             self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
             raise e
 
-    def read_encoder(self, encoder_name):
+    def read_encoders(self, encoder_name):
         try:
-            return self.__stub.readEncoderValues(StringValue(name=encoder_name))
+            return self.__stub.readEncoderValues(StringValue(value=encoder_name))
+        except BaseException as e:
+            self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
+            raise e
+
+    def read_commands(self):
+        try:
+            return self.__stub.readCommandValues(Empty())
         except BaseException as e:
             self.__log_error("Failed to reach gRPC server at {0} [{1}]".format(self.__hostname, e))
             raise e
