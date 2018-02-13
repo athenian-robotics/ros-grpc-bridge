@@ -33,9 +33,14 @@ def main():
 
     time.sleep(2)
 
-    # Read streming encoder values
-    for data in bridge.read_encoder("wheel2"):
+    # Read streaming encoder values
+    for data in bridge.read_encoders("wheel2"):
         logger.info("Read encoder value: " + str(data.value))
+
+    # Read streaming command values
+    for data in bridge.read_commands():
+        logger.info("Read command value: " + str(data.command))
+        logger.info("Read command value: " + str(data.command_arg))
 
 
 if __name__ == "__main__":

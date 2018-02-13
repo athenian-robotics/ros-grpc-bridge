@@ -16,6 +16,7 @@
 
 package org.athenian;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
@@ -25,6 +26,7 @@ import io.grpc.stub.StreamObserver;
 import org.athenian.common.Utils;
 import org.athenian.core.RosBridgeClientOptions;
 import org.athenian.core.TwistValueStream;
+import org.athenian.grpc.CommandValue;
 import org.athenian.grpc.EncoderValue;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceBlockingStub;
 import org.athenian.grpc.RosBridgeServiceGrpc.RosBridgeServiceStub;
@@ -126,16 +128,32 @@ public class RosBridgeClient {
       }
       Utils.sleepForSecs(1);
 
-      final Iterator<EncoderValue> iter = client.encoderValues("wheel1");
-      while (iter.hasNext()) {
-        EncoderValue encoderValue = iter.next();
+      final Iterator<EncoderValue> encoder_iter = client.encoderValues("wheel1");
+      while (encoder_iter.hasNext()) {
+        EncoderValue encoderValue = encoder_iter.next();
         logger.info("Read encoder value: " + encoderValue.getValue());
       }
 
-      final CountDownLatch completedLatch =
+      final CountDownLatch encoderLatch =
           client.encoderValues("wheel1",
                                encoderValue -> logger.info("Read encoder value: " + encoderValue.getValue()));
-      completedLatch.await();
+      encoderLatch.await();
+      Utils.sleepForSecs(1);
+
+      final Iterator<CommandValue> iter = client.commandValues();
+      while (iter.hasNext()) {
+        CommandValue commandValue = iter.next();
+        logger.info("Read command: " + commandValue.getCommand());
+        logger.info("Read command arg: " + commandValue.getCommandArg());
+      }
+
+      final CountDownLatch commandLatch =
+          client.commandValues(
+              commandValue -> {
+                logger.info("Read command: " + commandValue.getCommand());
+                logger.info("Read command arg: " + commandValue.getCommandArg());
+              });
+      commandLatch.await();
       Utils.sleepForSecs(1);
     }
   }
@@ -174,6 +192,36 @@ public class RosBridgeClient {
       }
     };
     this.getNonBlockingStub().readEncoderValues(encoderDesc, observer);
+    return completedLatch;
+  }
+
+  public Iterator<CommandValue> commandValues() {
+    return this.getBlockingStub().readCommandValues(Empty.getDefaultInstance());
+  }
+
+  public CountDownLatch commandValues(final Consumer<CommandValue> onMessageAction) {
+    final CountDownLatch completedLatch = new CountDownLatch(1);
+    final StreamObserver<CommandValue> observer = new StreamObserver<CommandValue>() {
+      @Override
+      public void onNext(CommandValue value) {
+        if (onMessageAction != null)
+          onMessageAction.accept(value);
+      }
+
+      @Override
+      public void onError(Throwable t) {
+        final Status status = Status.fromThrowable(t);
+        if (status != Status.CANCELLED)
+          logger.info("Error in asyncEncoderValues(): {}", status);
+        this.onCompleted();
+      }
+
+      @Override
+      public void onCompleted() {
+        completedLatch.countDown();
+      }
+    };
+    this.getNonBlockingStub().readCommandValues(Empty.getDefaultInstance(), observer);
     return completedLatch;
   }
 
