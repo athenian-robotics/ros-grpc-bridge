@@ -64,7 +64,7 @@ class RosBridgeServiceImpl
       public void onError(Throwable t) {
         final Status status = Status.fromThrowable(t);
         if (status != Status.CANCELLED)
-          logger.info("Error in streamTwistData(): {}", status);
+          logger.error("Error in streamTwistData(): {}", status);
         try {
           observer.onNext(Empty.getDefaultInstance());
           observer.onCompleted();

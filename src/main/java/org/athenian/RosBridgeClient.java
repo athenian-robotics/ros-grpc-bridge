@@ -182,7 +182,7 @@ public class RosBridgeClient {
       public void onError(Throwable t) {
         final Status status = Status.fromThrowable(t);
         if (status != Status.CANCELLED)
-          logger.info("Error in asyncEncoderValues(): {}", status);
+          logger.error("Error in asyncEncoderValues(): {}", status);
         this.onCompleted();
       }
 
@@ -212,7 +212,7 @@ public class RosBridgeClient {
       public void onError(Throwable t) {
         final Status status = Status.fromThrowable(t);
         if (status != Status.CANCELLED)
-          logger.info("Error in asyncEncoderValues(): {}", status);
+          logger.error("Error in asyncEncoderValues(): {}", status);
         this.onCompleted();
       }
 

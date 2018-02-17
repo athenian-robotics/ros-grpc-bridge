@@ -45,7 +45,7 @@ public class TwistValueStream
               @Override
               public void onError(Throwable t) {
                 final Status s = Status.fromThrowable(t);
-                logger.info("Error in TwistDataStream: {} {}", s.getCode(), s.getDescription());
+                logger.error("Error in TwistDataStream: {} {}", s.getCode(), s.getDescription());
               }
 
               @Override
